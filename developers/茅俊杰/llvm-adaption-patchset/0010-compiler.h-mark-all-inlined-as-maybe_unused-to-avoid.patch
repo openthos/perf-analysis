@@ -1,0 +1,39 @@
+From 52d71b9c53947852ce4fe3cd1aaef001546ac94e Mon Sep 17 00:00:00 2001
+From: Junjie Mao <junjie.mao@enight.me>
+Date: Tue, 25 Apr 2017 09:07:48 +0800
+Subject: [PATCH 10/16] compiler.h: mark all inlined as maybe_unused to avoid
+ compiler complains
+
+Signed-off-by: Junjie Mao <junjie.mao@enight.me>
+---
+ include/linux/compiler-gcc.h | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/include/linux/compiler-gcc.h b/include/linux/compiler-gcc.h
+index eeae401a2412..7c0d6a3012d1 100644
+--- a/include/linux/compiler-gcc.h
++++ b/include/linux/compiler-gcc.h
+@@ -70,14 +70,14 @@
+  */
+ #if !defined(CONFIG_ARCH_SUPPORTS_OPTIMIZED_INLINING) ||		\
+     !defined(CONFIG_OPTIMIZE_INLINING) || (__GNUC__ < 4)
+-#define inline		inline		__attribute__((always_inline)) notrace
+-#define __inline__	__inline__	__attribute__((always_inline)) notrace
+-#define __inline	__inline	__attribute__((always_inline)) notrace
++#define inline		inline		__attribute__((always_inline)) notrace __maybe_unused
++#define __inline__	__inline__	__attribute__((always_inline)) notrace __maybe_unused
++#define __inline	__inline	__attribute__((always_inline)) notrace __maybe_unused
+ #else
+ /* A lot of inline functions can cause havoc with function tracing */
+-#define inline		inline		notrace
+-#define __inline__	__inline__	notrace
+-#define __inline	__inline	notrace
++#define inline		inline		notrace __maybe_unused
++#define __inline__	__inline__	notrace __maybe_unused
++#define __inline	__inline	notrace __maybe_unused
+ #endif
+ 
+ #define __always_inline	inline __attribute__((always_inline))
+-- 
+1.9.3
+

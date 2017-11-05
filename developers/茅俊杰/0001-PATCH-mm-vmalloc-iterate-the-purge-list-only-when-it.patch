@@ -1,0 +1,97 @@
+From e3ba193f5ffe58c22d901e52996b94f7ba9faadf Mon Sep 17 00:00:00 2001
+From: chyyuu <yuchen@tsinghua.edu.cn>
+Date: Mon, 15 May 2017 22:42:26 +0800
+Subject: [PATCH] [PATCH] mm/vmalloc: iterate the purge list only when it is
+ not NULL
+
+Clang -O2, without the explicit check, generates wrong code which
+executes the loop body regardless of the condition and thus leads to
+invalid memory accesses.
+
+A minimal example that illustrates the bug is attached below.
+
+With clang 3.6.2/4.0.1/5.0.0, the program compiled with 'clang -O0' prints
+'0', while that with 'clang -O2' prints 'Buggy!'. Gcc has no such issue.
+
+---------------------------------------
+struct llist_head {
+        struct llist_node *first;
+};
+
+struct llist_node {
+        struct llist_node *next;
+};
+
+typedef unsigned int size_t;
+
+	const typeof( ((type *)0)->member ) *__mptr = (ptr);	\
+	(type *)( (char *)__mptr - offsetof(type,member) );})
+
+	container_of(ptr, type, member)
+
+	for ((pos) = llist_entry((node), typeof(*(pos)), member);	\
+	     &(pos)->member != NULL;					\
+	     (pos) = llist_entry((pos)->member.next, typeof(*(pos)), member))
+
+struct va {
+    int i;
+    struct llist_node purge_list;
+};
+
+struct llist_node *valist = 0;
+
+int main(int argc, char *argv[]) {
+    struct va *va;
+    nt nr = 0;
+
+    llist_for_each_entry(va, valist, purge_list) {
+        nr += 1;
+        if (nr > 10) {
+            printf("Buggy!\n");
+            return 1;
+        }
+    }
+
+    printf("%d\n", nr);
+    return 0;
+}
+------------------------------------------
+
+According to the disassembled LLVM IR before/after the -instcombine
+pass, it can be seen that LLVM consider an expression in the form
+of (&A->f) to always be non-null, which lead to an incorrect condition
+simplification to the code above.
+
+This patch works around the issue by modifying the for-loop header of
+llist iteration so that no (&A->f) is involved in the loop condition.
+
+Signed-off-by: Junjie Mao <junjie.mao@enight.me>
+---
+ include/linux/llist.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/include/linux/llist.h b/include/linux/llist.h
+index fd4ca0b4fe0f..c8091a34d042 100644
+--- a/include/linux/llist.h
++++ b/include/linux/llist.h
+@@ -121,7 +121,7 @@ static inline void init_llist_head(struct llist_head *list)
+  */
+ #define llist_for_each_entry(pos, node, member)				\
+ 	for ((pos) = llist_entry((node), typeof(*(pos)), member);	\
+-	     &(pos)->member != NULL;					\
++	     (pos) != llist_entry(NULL, typeof(*(pos)), member);	\
+ 	     (pos) = llist_entry((pos)->member.next, typeof(*(pos)), member))
+ 
+ /**
+@@ -143,7 +143,7 @@ static inline void init_llist_head(struct llist_head *list)
+  */
+ #define llist_for_each_entry_safe(pos, n, node, member)			       \
+ 	for (pos = llist_entry((node), typeof(*pos), member);		       \
+-	     &pos->member != NULL &&					       \
++	     (pos) != llist_entry(NULL, typeof(*(pos)), member) &&	       \
+ 	        (n = llist_entry(pos->member.next, typeof(*n), member), true); \
+ 	     pos = n)
+ 
+-- 
+1.9.3
+

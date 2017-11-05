@@ -1,0 +1,25 @@
+From dffb95b131c2ed87f233da89b5365fa8b728fb9b Mon Sep 17 00:00:00 2001
+From: Junjie Mao <junjie.mao@enight.me>
+Date: Tue, 25 Apr 2017 08:39:44 +0800
+Subject: [PATCH 01/16] gitignore: ignore LLVM disassembly files
+
+Signed-off-by: Junjie Mao <junjie.mao@enight.me>
+---
+ .gitignore | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/.gitignore b/.gitignore
+index fd3a35592543..34fe1346aa87 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -33,6 +33,7 @@
+ *.lzo
+ *.patch
+ *.gcno
++*.ll
+ modules.builtin
+ Module.symvers
+ *.dwo
+-- 
+1.9.3
+

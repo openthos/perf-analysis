@@ -1,0 +1,319 @@
+* raw data
+** BLOCKING_NOTIFIER_HEAD -> SRCU_NOTIFIER_HEAD
+   ./0256-crypto-Convert-crypto-notifier-chain-to-SRCU.patch
+** __raise_softirq_irqoff -> __raise_softirq_irqoff_ksoft
+   ./0200-net-provide-a-way-to-delegate-processing-a-softirq-t.patch
+** __sigqueue_free -> sigqueue_free_current
+   ./0027-signals-Allow-rt-tasks-to-cache-one-sigqueue-struct.patch
+** __this_cpu_dec -> xmit_rec_dec
+   ./0199-net-move-xmit_recursion-to-per-task-variable-on-RT.patch
+** __this_cpu_inc -> xmit_rec_inc
+   ./0199-net-move-xmit_recursion-to-per-task-variable-on-RT.patch
+** acpi_os_delete_lock -> acpi_os_delete_raw_lock
+   ./0239-acpi-rt-Convert-acpi_gbl_hardware-lock-back-to-a-raw.patch
+** acpi_os_release_lock -> raw_spin_unlock_irqrestore
+   ./0239-acpi-rt-Convert-acpi_gbl_hardware-lock-back-to-a-raw.patch
+** bit_spin_lock -> zram_lock_table
+   ./0275-drivers-block-zram-Replace-bit-spinlocks-with-rtmute.patch
+** bit_spin_unlock -> zram_unlock_table
+   ./0275-drivers-block-zram-Replace-bit-spinlocks-with-rtmute.patch
+** blocking_notifier_call_chain -> srcu_notifier_call_chain
+   ./0256-crypto-Convert-crypto-notifier-chain-to-SRCU.patch
+** clk_enable -> tc_clk_enable
+   ./0003-arm-at91-do-not-disable-enable-clocks-in-a-row.patch
+** del_timer_sync -> hrtimer_cancel
+   ./0168-x86-Convert-mce-timer-to-hrtimer.patch
+** disable_irq -> disable_irq_nosync
+   ./0032-drivers-net-Use-disable_irq_nosync-in-8139too.patch
+** do_set_cpus_allowed -> set_cpus_allowed_ptr
+   ./0248-hotplug-Use-set_cpus_allowed_ptr-in-sync_unplug_thre.patch
+** down_read_non_owner -> nfs_down_anon
+   ./0133-fs-nfs-turn-rmdir_sem-into-a-semaphore.patch
+** flush_sigqueue -> flush_task_sigqueue
+   ./0027-signals-Allow-rt-tasks-to-cache-one-sigqueue-struct.patch
+** kfree_skb -> __skb_queue_tail
+   ./0197-net-Use-skbufhead-with-raw-lock.patch
+** percpu_down_read_preempt_disable -> percpu_down_read
+   ./0162-locking-percpu-rwsem-Remove-preempt_disable-variants.patch
+** percpu_up_read_preempt_enable -> percpu_up_read
+   ./0162-locking-percpu-rwsem-Remove-preempt_disable-variants.patch
+** resched_curr -> resched_curr_lazy
+   ./0265-sched-Add-support-for-lazy-preemption.patch
+** seqcount_init -> seqlock_init
+   ./0017-NFSv4-replace-seqcount_t-with-a-seqlock_t.patch
+** spin_lock_irqsave -> local_spin_lock_irqsave
+   ./0074-mm-page_alloc-rt-friendly-per-cpu-pages.patch
+** trace_preemptirqsoff_hist -> trace_preemptirqsoff_hist_rcuidle
+   ./0042-trace-Use-rcuidle-version-for-preemptoff_hist-trace-.patch
+** up_read_non_owner -> nfs_up_anon
+   ./0133-fs-nfs-turn-rmdir_sem-into-a-semaphore.patch
+** wake_up_all -> wake_up_all_locked
+   ./0037-pci-Use-__wake_up_all_locked-in-pci_unblock_user_cfg.patch
+** wakeup_softirqd -> wakeup_proper_softirq
+   ./0130-softirq-split-timer-softirqs-out-of-ksoftirqd.patch
+* categorized
+** restore previous semantics
+*** spin_lock -> raw_spin_lock
+    ./0001-timer-make-the-base-lock-raw.patch
+    ./0024-arm-Convert-arm-boot_lock-to-raw.patch
+    ./0082-mm-Enable-SLUB-for-RT.patch
+    ./0172-x86-UV-raw_spinlock-conversion.patch
+    ./0197-net-Use-skbufhead-with-raw-lock.patch
+*** spin_lock_init -> raw_spin_lock_init
+    ./0001-timer-make-the-base-lock-raw.patch
+    ./0082-mm-Enable-SLUB-for-RT.patch
+    ./0115-stop_machine-Use-raw-spinlocks.patch
+    ./0172-x86-UV-raw_spinlock-conversion.patch
+*** spin_lock_irq -> raw_spin_lock_irq
+    ./0001-timer-make-the-base-lock-raw.patch
+    ./0024-arm-Convert-arm-boot_lock-to-raw.patch
+    ./0082-mm-Enable-SLUB-for-RT.patch
+    ./0115-stop_machine-Use-raw-spinlocks.patch
+    ./0158-completion-Use-simple-wait-queues.patch
+*** spin_lock_irqsave -> raw_spin_lock_irqsave
+    ./0001-timer-make-the-base-lock-raw.patch
+    ./0025-arm-kprobe-replace-patch_lock-to-raw-lock.patch
+    ./0082-mm-Enable-SLUB-for-RT.patch
+    ./0115-stop_machine-Use-raw-spinlocks.patch
+    ./0158-completion-Use-simple-wait-queues.patch
+    ./0172-x86-UV-raw_spinlock-conversion.patch
+    ./0217-arm-unwind-use-a-raw_spin_lock.patch
+*** spin_unlock -> raw_spin_unlock
+    ./0001-timer-make-the-base-lock-raw.patch
+    ./0024-arm-Convert-arm-boot_lock-to-raw.patch
+    ./0082-mm-Enable-SLUB-for-RT.patch
+    ./0172-x86-UV-raw_spinlock-conversion.patch
+    ./0197-net-Use-skbufhead-with-raw-lock.patch
+*** spin_unlock_irq -> raw_spin_unlock_irq
+    ./0001-timer-make-the-base-lock-raw.patch
+    ./0024-arm-Convert-arm-boot_lock-to-raw.patch
+    ./0082-mm-Enable-SLUB-for-RT.patch
+    ./0115-stop_machine-Use-raw-spinlocks.patch
+    ./0158-completion-Use-simple-wait-queues.patch
+*** spin_unlock_irqrestore -> raw_spin_unlock_irqrestore
+    ./0001-timer-make-the-base-lock-raw.patch
+    ./0025-arm-kprobe-replace-patch_lock-to-raw-lock.patch
+    ./0082-mm-Enable-SLUB-for-RT.patch
+    ./0115-stop_machine-Use-raw-spinlocks.patch
+    ./0158-completion-Use-simple-wait-queues.patch
+    ./0172-x86-UV-raw_spinlock-conversion.patch
+    ./0217-arm-unwind-use-a-raw_spin_lock.patch
+*** spin_unlock_wait -> raw_spin_unlock_wait
+    ./0158-completion-Use-simple-wait-queues.patch
+** loosen protection
+   for faster response or not offend might_sleep() checks
+*** lock + preempt -> lock
+**** write_seqcount_begin -> __raw_write_seqcount_begin
+     ./0195-seqlock-Prevent-rt-starvation.patch
+**** write_seqcount_end -> __raw_write_seqcount_end
+     ./0195-seqlock-Prevent-rt-starvation.patch
+*** spinlock -> local_lock
+*** noirq -> local_lock
+**** local_irq_disable -> local_lock_irq
+     ./0062-mm-workingset-Do-not-protect-workingset_shadow_nodes.patch
+     ./0087-mm-memcontrol-Replace-local_irq_disable-with-local-l.patch
+     ./0188-workqueue-Use-local-irq-lock-instead-of-irq-disable-.patch
+     ./0280-drm-i915-Use-local_lock-unlock_irq-in-intel_pipe_upd.patch
+**** local_irq_enable -> local_unlock_irq
+     ./0062-mm-workingset-Do-not-protect-workingset_shadow_nodes.patch
+     ./0087-mm-memcontrol-Replace-local_irq_disable-with-local-l.patch
+     ./0188-workqueue-Use-local-irq-lock-instead-of-irq-disable-.patch
+     ./0280-drm-i915-Use-local_lock-unlock_irq-in-intel_pipe_upd.patch
+**** local_irq_save -> local_lock_irqsave
+     ./0074-mm-page_alloc-rt-friendly-per-cpu-pages.patch
+     ./0076-mm-swap-Convert-to-percpu-locked.patch
+     ./0087-mm-memcontrol-Replace-local_irq_disable-with-local-l.patch
+     ./0088-mm-memcontrol-mem_cgroup_migrate-replace-another-loc.patch
+     ./0188-workqueue-Use-local-irq-lock-instead-of-irq-disable-.patch
+     ./0192-percpu_ida-Use-local-locks.patch
+     ./0252-net-Another-local_irq_disable-kmalloc-headache.patch
+     ./0282-memcontrol-Prevent-scheduling-while-atomic-in-cgroup.patch
+**** local_irq_restore -> local_unlock_irqrestore
+     ./0074-mm-page_alloc-rt-friendly-per-cpu-pages.patch
+     ./0076-mm-swap-Convert-to-percpu-locked.patch
+     ./0087-mm-memcontrol-Replace-local_irq_disable-with-local-l.patch
+     ./0088-mm-memcontrol-mem_cgroup_migrate-replace-another-loc.patch
+     ./0188-workqueue-Use-local-irq-lock-instead-of-irq-disable-.patch
+     ./0192-percpu_ida-Use-local-locks.patch
+     ./0252-net-Another-local_irq_disable-kmalloc-headache.patch
+     ./0282-memcontrol-Prevent-scheduling-while-atomic-in-cgroup.patch
+**** local_irq_save -> cpu_lock_irqsave
+     ./0074-mm-page_alloc-rt-friendly-per-cpu-pages.patch
+**** local_irq_restore -> cpu_unlock_irqrestore
+     ./0074-mm-page_alloc-rt-friendly-per-cpu-pages.patch
+*** noirq -> none
+**** local_irq_disable -> local_irq_disable_nort
+     ./0056-ide-Do-not-disable-interrupts-for-PREEMPT-RT.patch
+     ./0209-snd-pcm-fix-snd_pcm_stream_lock-irqs_disabled-splats.patch
+**** local_irq_enable -> local_irq_enable_nort
+     ./0209-snd-pcm-fix-snd_pcm_stream_lock-irqs_disabled-splats.patch
+**** local_irq_save -> local_irq_save_nort
+     ./0055-ata-Do-not-disable-interrupts-in-ide-code-for-preemp.patch
+     ./0056-ide-Do-not-disable-interrupts-for-PREEMPT-RT.patch
+     ./0057-infiniband-Mellanox-IB-driver-patch-use-_nort-primit.patch
+     ./0058-input-gameport-Do-not-disable-interrupts-on-PREEMPT_.patch
+     ./0059-core-Do-not-disable-interrupts-on-RT-in-kernel-users.patch
+     ./0060-usb-Use-_nort-in-giveback-function.patch
+     ./0061-mm-scatterlist-Do-not-disable-irqs-on-RT.patch
+     ./0063-signal-Make-__lock_task_sighand-RT-aware.patch
+     ./0073-drivers-net-vortex-fix-locking-issues.patch
+     ./0080-mm-bounce-Use-local_irq_save_nort.patch
+     ./0089-mm-backing-dev-don-t-disable-IRQs-in-wb_congested_pu.patch
+     ./0166-fs-ntfs-disable-interrupt-only-on-RT.patch
+     ./0209-snd-pcm-fix-snd_pcm_stream_lock-irqs_disabled-splats.patch
+     ./0235-sas-ata-isci-dont-t-disable-interrupts-in-qc_issue-h.patch
+     ./0250-scsi-qla2xxx-Use-local_irq_save_nort-in-qla2x00_poll.patch
+**** local_irq_restore -> local_irq_restore_nort
+     ./0055-ata-Do-not-disable-interrupts-in-ide-code-for-preemp.patch
+     ./0056-ide-Do-not-disable-interrupts-for-PREEMPT-RT.patch
+     ./0057-infiniband-Mellanox-IB-driver-patch-use-_nort-primit.patch
+     ./0058-input-gameport-Do-not-disable-interrupts-on-PREEMPT_.patch
+     ./0059-core-Do-not-disable-interrupts-on-RT-in-kernel-users.patch
+     ./0060-usb-Use-_nort-in-giveback-function.patch
+     ./0061-mm-scatterlist-Do-not-disable-irqs-on-RT.patch
+     ./0063-signal-Make-__lock_task_sighand-RT-aware.patch
+     ./0073-drivers-net-vortex-fix-locking-issues.patch
+     ./0080-mm-bounce-Use-local_irq_save_nort.patch
+     ./0089-mm-backing-dev-don-t-disable-IRQs-in-wb_congested_pu.patch
+     ./0166-fs-ntfs-disable-interrupt-only-on-RT.patch
+     ./0209-snd-pcm-fix-snd_pcm_stream_lock-irqs_disabled-splats.patch
+     ./0235-sas-ata-isci-dont-t-disable-interrupts-in-qc_issue-h.patch
+     ./0250-scsi-qla2xxx-Use-local_irq_save_nort-in-qla2x00_poll.patch
+
+*** nobh -> none
+**** local_bh_disable -> local_bh_disable_nort
+     ./0126-softirq-Split-softirq-locks.patch
+**** _local_bh_enable -> _local_bh_enable_nort
+     ./0126-softirq-Split-softirq-locks.patch
+*** preempt -> migrate + local_lock
+**** get_cpu_var -> get_locked_var
+     ./0076-mm-swap-Convert-to-percpu-locked.patch
+     ./0090-mm-zsmalloc-copy-with-get_cpu_var-and-locking.patch
+**** put_cpu_var -> put_locked_var
+     ./0076-mm-swap-Convert-to-percpu-locked.patch
+     ./0090-mm-zsmalloc-copy-with-get_cpu_var-and-locking.patch
+*** preempt -> migrate
+**** preempt_disable -> migrate_disable
+     ./0220-KVM-arm-arm64-downgrade-preempt_disable-d-region-to-.patch
+     ./0251-net-Remove-preemption-disabling-in-netif_rx.patch
+**** preempt_enable -> migrate_enable
+     ./0220-KVM-arm-arm64-downgrade-preempt_disable-d-region-to-.patch
+**** get_cpu -> get_cpu_light
+     ./0086-mm-memcontrol-Don-t-call-schedule_work_on-in-preempt.patch
+     ./0174-fs-epoll-Do-not-disable-preemption-on-RT.patch
+     ./0176-block-mq-use-cpu_light.patch
+     ./0177-block-mq-do-not-invoke-preempt_disable.patch
+     ./0196-sunrpc-Make-svc_xprt_do_enqueue-use-get_cpu_light.patch
+     ./0234-scsi-fcoe-Make-RT-aware.patch
+**** get_cpu_ptr -> raw_cpu_ptr
+     ./0009-iommu-iova-don-t-disable-preempt-around-this_cpu_ptr.patch
+**** put_cpu -> put_cpu_light
+     ./0086-mm-memcontrol-Don-t-call-schedule_work_on-in-preempt.patch
+     ./0174-fs-epoll-Do-not-disable-preemption-on-RT.patch
+     ./0176-block-mq-use-cpu_light.patch
+     ./0177-block-mq-do-not-invoke-preempt_disable.patch
+     ./0196-sunrpc-Make-svc_xprt_do_enqueue-use-get_cpu_light.patch
+     ./0234-scsi-fcoe-Make-RT-aware.patch
+**** put_cpu_var -> put_cpu_light
+     ./0175-mm-vmalloc-Another-preempt-disable-region-which-suck.patch
+     ./0234-scsi-fcoe-Make-RT-aware.patch
+*** preempt -> local_lock
+**** preempt_enable -> local_unlock
+     ./0274-connector-cn_proc-Protect-send_msg-with-a-local-lock.patch
+**** preempt_disable -> idr_preload_lock
+     ./0191-idr-Use-local-lock-instead-of-preempt-enable-disable.patch
+**** preempt_enable -> idr_preload_unlock
+     ./0191-idr-Use-local-lock-instead-of-preempt-enable-disable.patch
+*** preempt -> none
+**** preempt_disable -> preempt_disable_nort
+     ./0227-mm-rt-Fix-generic-kmap_atomic-for-RT.patch
+**** preempt_enable -> preempt_enable_nort
+     ./0091-radix-tree-Make-RT-aware.patch
+     ./0226-mm-rt-kmap_atomic-scheduling.patch
+     ./0227-mm-rt-Fix-generic-kmap_atomic-for-RT.patch
+** wait -> swait
+*** DECLARE_WAITQUEUE -> DECLARE_SWAITQUEUE
+    ./0158-completion-Use-simple-wait-queues.patch
+*** DECLARE_WAIT_QUEUE_HEAD_ONSTACK -> DECLARE_SWAIT_QUEUE_HEAD_ONSTACK
+    ./0186-fs-dcache-use-swait_queue-instead-of-waitqueue.patch
+*** init_waitqueue_head -> init_swait_queue_head
+    ./0014-locking-percpu-rwsem-use-swait-for-the-wating-writer.patch
+    ./0158-completion-Use-simple-wait-queues.patch
+    ./0182-block-blk-mq-Use-swait.patch
+    ./0186-fs-dcache-use-swait_queue-instead-of-waitqueue.patch
+*** wait_event -> swait_event
+    ./0014-locking-percpu-rwsem-use-swait-for-the-wating-writer.patch
+    ./0182-block-blk-mq-Use-swait.patch
+*** wait_event_interruptible -> swait_event_interruptible
+    ./0158-completion-Use-simple-wait-queues.patch
+*** waitqueue_active -> swait_active
+    ./0158-completion-Use-simple-wait-queues.patch
+*** wake_up -> swake_up
+    ./0014-locking-percpu-rwsem-use-swait-for-the-wating-writer.patch
+*** wake_up_all -> swake_up_all
+    ./0182-block-blk-mq-Use-swait.patch
+    ./0186-fs-dcache-use-swait_queue-instead-of-waitqueue.patch
+*** __remove_wait_queue -> __finish_swait
+    ./0158-completion-Use-simple-wait-queues.patch
+*** __add_wait_queue_tail_exclusive -> __prepare_to_swait
+    ./0158-completion-Use-simple-wait-queues.patch
+** processes with higher priorities must sleep to let those with lower go
+   fix 'livelock' at the cost of throughput
+   hirq - 50
+*** cpu_relax -> cpu_chill
+    ./0183-block-Use-cpu_chill-for-retry-loops.patch
+    ./0184-fs-dcache-Use-cpu_chill-in-trylock-loops.patch
+    ./0185-net-Use-cpu_chill-instead-of-cpu_relax.patch
+    ./0189-workqueue-Prevent-workqueue-versus-ata-piix-livelock.patch
+*** cpu_relax -> hrtimer_wait_for_timer
+    ./0095-hrtimers-Prepare-full-preemption.patch
+*** cpu_relax -> wait_for_running_timer
+    ./0093-timers-Prepare-for-full-preemption.patch
+*** yield -> msleep
+    ./0035-net-sched-Use-msleep-instead-of-yield.patch
+    ./0123-tasklet-Prevent-tasklets-from-going-into-infinite-sp.patch
+** replace rcu_sched with standard rcu
+*** call_rcu_sched -> call_rcu
+    ./0187-workqueue-Use-normal-rcu.patch
+*** local_irq_disable -> rcu_read_lock
+    ./0187-workqueue-Use-normal-rcu.patch
+*** local_irq_enable -> rcu_read_unlock
+    ./0187-workqueue-Use-normal-rcu.patch
+*** local_irq_save -> rcu_read_lock
+    ./0187-workqueue-Use-normal-rcu.patch
+*** local_irq_restore -> rcu_read_unlock
+    ./0187-workqueue-Use-normal-rcu.patch
+*** rcu_read_lock_sched -> rcu_read_lock
+    ./0187-workqueue-Use-normal-rcu.patch
+*** rcu_read_unlock_sched -> rcu_read_unlock
+    ./0187-workqueue-Use-normal-rcu.patch
+** assertions valid only w/o -rt
+*** BUG_ON -> BUG_ON_NONRT
+    ./0207-irqwork-push-most-work-into-softirq-context.patch
+    ./0238-dm-Make-rt-aware.patch
+*** WARN_ON -> WARN_ON_NONRT
+    ./0165-block-Turn-off-warning-which-is-bogus-on-RT.patch
+    ./0278-i915-bogus-warning-from-i915-when-running-on-PREEMPT.patch
+*** WARN_ON_ONCE -> WARN_ON_ONCE_NONRT
+    ./0066-net-wireless-Use-WARN_ON_NORT.patch
+    ./0101-posix-timers-Thread-posix-cpu-timers-on-rt.patch
+    ./0188-workqueue-Use-local-irq-lock-instead-of-irq-disable-.patch
+** code maintenance
+*** __rt_mutex_init -> rt_mutex_init
+    ./0144-rt-Add-the-preempt-rt-lock-replacement-APIs.patch
+*** combine spin_lock and local_irq
+**** spin_lock -> spin_lock_irq
+     ./0020-block-Shorten-interrupt-disabled-regions.patch
+     ./0187-workqueue-Use-normal-rcu.patch
+**** spin_lock -> spin_lock_irqsave
+     ./0187-workqueue-Use-normal-rcu.patch
+**** spin_unlock -> spin_unlock_irq
+     ./0020-block-Shorten-interrupt-disabled-regions.patch
+**** spin_unlock -> spin_unlock_irqrestore
+     ./0075-mm-page_alloc-Reduce-lock-sections-further.patch
+     ./0187-workqueue-Use-normal-rcu.patch
+*** cpu_lock internals
+**** spin_lock_irqsave -> local_lock_irqsave_on
+     ./0085-mm-page_alloc-Use-local_lock_on-instead-of-plain-spi.patch
+**** spin_unlock_irqrestore -> local_unlock_irqrestore_on
+     ./0085-mm-page_alloc-Use-local_lock_on-instead-of-plain-spi.patch

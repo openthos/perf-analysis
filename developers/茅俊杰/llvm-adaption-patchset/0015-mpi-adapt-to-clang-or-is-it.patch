@@ -1,0 +1,103 @@
+From e00df5ae117635a9bf6db0d366c16b39ab4f7ea0 Mon Sep 17 00:00:00 2001
+From: Junjie Mao <junjie.mao@enight.me>
+Date: Tue, 25 Apr 2017 10:00:16 +0800
+Subject: [PATCH 15/16] mpi: adapt to clang (or is it?)
+
+Signed-off-by: Junjie Mao <junjie.mao@enight.me>
+---
+ lib/mpi/Makefile       |  2 ++
+ lib/mpi/longlong.h     |  9 +++------
+ lib/mpi/mpi-inline.h   |  2 +-
+ lib/mpi/mpi-internal.h | 10 +---------
+ 4 files changed, 7 insertions(+), 16 deletions(-)
+
+diff --git a/lib/mpi/Makefile b/lib/mpi/Makefile
+index 019a68c90144..d5553f6b9f09 100644
+--- a/lib/mpi/Makefile
++++ b/lib/mpi/Makefile
+@@ -4,6 +4,8 @@
+ 
+ obj-$(CONFIG_MPILIB) = mpi.o
+ 
++CFLAGS_KERNEL += $(call cc-option,-fheinous-gnu-extensions)
++
+ mpi-y = \
+ 	generic_mpih-lshift.o		\
+ 	generic_mpih-mul1.o		\
+diff --git a/lib/mpi/longlong.h b/lib/mpi/longlong.h
+index b90e255c2a68..881a62ca0578 100644
+--- a/lib/mpi/longlong.h
++++ b/lib/mpi/longlong.h
+@@ -193,8 +193,7 @@ extern UDItype __udiv_qrnnd(UDItype *, UDItype, UDItype, UDItype);
+ 		"rI" ((USItype)(bl)))
+ #if defined __ARM_ARCH_2__ || defined __ARM_ARCH_3__
+ #define umul_ppmm(xh, xl, a, b) \
+-	__asm__ ("%@ Inlined umul_ppmm\n" \
+-		"mov	%|r0, %2, lsr #16		@ AAAA\n" \
++	__asm__ ("mov	%|r0, %2, lsr #16		@ AAAA\n" \
+ 		"mov	%|r2, %3, lsr #16		@ BBBB\n" \
+ 		"bic	%|r1, %2, %|r0, lsl #16		@ aaaa\n" \
+ 		"bic	%0, %3, %|r2, lsl #16		@ bbbb\n" \
+@@ -213,10 +212,8 @@ extern UDItype __udiv_qrnnd(UDItype *, UDItype, UDItype, UDItype);
+ 	: "r0", "r1", "r2")
+ #else
+ #define umul_ppmm(xh, xl, a, b) \
+-	__asm__ ("%@ Inlined umul_ppmm\n" \
+-		"umull %r1, %r0, %r2, %r3" \
+-	: "=&r" ((USItype)(xh)), \
+-			"=r" ((USItype)(xl)) \
++	__asm__ ("umull %1, %0, %2, %3" \
++	: "=&r" ((xh)), "=r" ((xl)) \
+ 	: "r" ((USItype)(a)), \
+ 			"r" ((USItype)(b)) \
+ 	: "r0", "r1")
+diff --git a/lib/mpi/mpi-inline.h b/lib/mpi/mpi-inline.h
+index e2b39852b30a..c245ea31f785 100644
+--- a/lib/mpi/mpi-inline.h
++++ b/lib/mpi/mpi-inline.h
+@@ -30,7 +30,7 @@
+ #define G10_MPI_INLINE_H
+ 
+ #ifndef G10_MPI_INLINE_DECL
+-#define G10_MPI_INLINE_DECL  extern inline
++#define G10_MPI_INLINE_DECL  static inline
+ #endif
+ 
+ G10_MPI_INLINE_DECL mpi_limb_t
+diff --git a/lib/mpi/mpi-internal.h b/lib/mpi/mpi-internal.h
+index c65dd1bff45a..09e9f13c5ba0 100644
+--- a/lib/mpi/mpi-internal.h
++++ b/lib/mpi/mpi-internal.h
+@@ -168,20 +168,12 @@ void mpi_rshift_limbs(MPI a, unsigned int count);
+ int mpi_lshift_limbs(MPI a, unsigned int count);
+ 
+ /*-- mpihelp-add.c --*/
+-mpi_limb_t mpihelp_add_1(mpi_ptr_t res_ptr, mpi_ptr_t s1_ptr,
+-			 mpi_size_t s1_size, mpi_limb_t s2_limb);
+ mpi_limb_t mpihelp_add_n(mpi_ptr_t res_ptr, mpi_ptr_t s1_ptr,
+ 			 mpi_ptr_t s2_ptr, mpi_size_t size);
+-mpi_limb_t mpihelp_add(mpi_ptr_t res_ptr, mpi_ptr_t s1_ptr, mpi_size_t s1_size,
+-		       mpi_ptr_t s2_ptr, mpi_size_t s2_size);
+ 
+ /*-- mpihelp-sub.c --*/
+-mpi_limb_t mpihelp_sub_1(mpi_ptr_t res_ptr, mpi_ptr_t s1_ptr,
+-			 mpi_size_t s1_size, mpi_limb_t s2_limb);
+ mpi_limb_t mpihelp_sub_n(mpi_ptr_t res_ptr, mpi_ptr_t s1_ptr,
+ 			 mpi_ptr_t s2_ptr, mpi_size_t size);
+-mpi_limb_t mpihelp_sub(mpi_ptr_t res_ptr, mpi_ptr_t s1_ptr, mpi_size_t s1_size,
+-		       mpi_ptr_t s2_ptr, mpi_size_t s2_size);
+ 
+ /*-- mpihelp-cmp.c --*/
+ int mpihelp_cmp(mpi_ptr_t op1_ptr, mpi_ptr_t op2_ptr, mpi_size_t size);
+@@ -238,7 +230,7 @@ mpi_limb_t mpihelp_rshift(mpi_ptr_t wp, mpi_ptr_t up, mpi_size_t usize,
+ #define W_TYPE_SIZE BITS_PER_MPI_LIMB
+ typedef mpi_limb_t UWtype;
+ typedef unsigned int UHWtype;
+-#if defined(__GNUC__)
++#if defined(__GNUC__) && !defined(__clang__)
+ typedef unsigned int UQItype __attribute__ ((mode(QI)));
+ typedef int SItype __attribute__ ((mode(SI)));
+ typedef unsigned int USItype __attribute__ ((mode(SI)));
+-- 
+1.9.3
+

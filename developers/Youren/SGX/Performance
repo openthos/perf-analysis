@@ -1,0 +1,16 @@
+# Performance overhead of SGX
+## EENTER and EEXIT overhead
+
+Once an enclave want to invoke an OCALL(Call service outside enclave from inside), it must EEXIT and EENTER later. The typical example is syscall.
+Here is the log file:
+Info: executing thread synchronization, please wait...
+TSC overhead: 26
+System call request from encalve tooks 7521 cycles
+Pid result: 32701
+System call native tooks 165 cycles
+Pid: 32701
+
+System call from native system only cost 165 cycles but once you want to invoke it from Enclave, it will cost 7500 cycles.
+
+## Cache miss performance test
+finishing

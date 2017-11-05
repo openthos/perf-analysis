@@ -1,0 +1,599 @@
+From 678b4ea5c7e5de72d9b7b777e8d010307502a5b2 Mon Sep 17 00:00:00 2001
+From: Junjie Mao <junjie.mao@enight.me>
+Date: Tue, 25 Apr 2017 14:49:02 +0800
+Subject: [PATCH 16/16] misc: changes that seem not to be related to clang
+
+Signed-off-by: Junjie Mao <junjie.mao@enight.me>
+---
+ arch/x86/vdso/vdso-syms.lds                        |   1 +
+ arch/x86/vdso/vdso.lds                             | 111 ++++++++++++++++++++
+ arch/x86/vdso/vdso32-int80-syms.lds                |   6 ++
+ arch/x86/vdso/vdso32-syms.lds                      |   7 ++
+ arch/x86/vdso/vdso32-syscall-syms.lds              |   6 ++
+ arch/x86/vdso/vdso32-sysenter-syms.lds             |   7 ++
+ arch/x86/vdso/vdso32/vdso32.lds                    | 115 +++++++++++++++++++++
+ arch/x86/vdso/vdsox32-syms.lds                     |   1 +
+ arch/x86/vdso/vdsox32.lds                          | 107 +++++++++++++++++++
+ drivers/hid/hid-core.c                             |  16 +--
+ drivers/pci/pcie/aspm.c                            |  16 +--
+ drivers/scsi/megaraid/megaraid_sas_base.c          |   2 +-
+ kernel/time/timekeeping.c                          |  31 +++++-
+ .../tomoyo/policy/exception_policy.conf.default    |   2 -
+ 14 files changed, 403 insertions(+), 25 deletions(-)
+ create mode 100644 arch/x86/vdso/vdso-syms.lds
+ create mode 100644 arch/x86/vdso/vdso.lds
+ create mode 100644 arch/x86/vdso/vdso32-int80-syms.lds
+ create mode 100644 arch/x86/vdso/vdso32-syms.lds
+ create mode 100644 arch/x86/vdso/vdso32-syscall-syms.lds
+ create mode 100644 arch/x86/vdso/vdso32-sysenter-syms.lds
+ create mode 100644 arch/x86/vdso/vdso32/vdso32.lds
+ create mode 100644 arch/x86/vdso/vdsox32-syms.lds
+ create mode 100644 arch/x86/vdso/vdsox32.lds
+ delete mode 100644 security/tomoyo/policy/exception_policy.conf.default
+
+diff --git a/arch/x86/vdso/vdso-syms.lds b/arch/x86/vdso/vdso-syms.lds
+new file mode 100644
+index 000000000000..9ea50d4f2d46
+--- /dev/null
++++ b/arch/x86/vdso/vdso-syms.lds
+@@ -0,0 +1 @@
++VDSO64_PRELINK = 0xffffffffff700000;
+diff --git a/arch/x86/vdso/vdso.lds b/arch/x86/vdso/vdso.lds
+new file mode 100644
+index 000000000000..cd54b396315d
+--- /dev/null
++++ b/arch/x86/vdso/vdso.lds
+@@ -0,0 +1,111 @@
++/*
++ *
++ * Automatically generated file; DO NOT EDIT.
++ * Linux/x86 3.13.0 Kernel Configuration
++ *
++ */
++/*
++ * Helper macros to use CONFIG_ options in C/CPP expressions. Note that
++ * these only work with boolean and tristate options.
++ */
++/*
++ * Getting something that works in C and CPP for an arg that may or may
++ * not be defined is tricky.  Here, if we have "#define CONFIG_BOOGER 1"
++ * we match on the placeholder define, insert the "0," for arg1 and generate
++ * the triplet (0, 1, 0).  Then the last step cherry picks the 2nd arg (a one).
++ * When CONFIG_BOOGER is not defined, we generate a (... 1, 0) pair, and when
++ * the last step cherry picks the 2nd arg, we get a zero.
++ */
++/*
++ * IS_ENABLED(CONFIG_FOO) evaluates to 1 if CONFIG_FOO is set to 'y' or 'm',
++ * 0 otherwise.
++ *
++ */
++/*
++ * IS_BUILTIN(CONFIG_FOO) evaluates to 1 if CONFIG_FOO is set to 'y', 0
++ * otherwise. For boolean options, this is equivalent to
++ * IS_ENABLED(CONFIG_FOO).
++ */
++/*
++ * IS_MODULE(CONFIG_FOO) evaluates to 1 if CONFIG_FOO is set to 'm', 0
++ * otherwise.
++ */
++/*
++ * Linker script for 64-bit vDSO.
++ * We #include the file to define the layout details.
++ * Here we only choose the prelinked virtual address.
++ *
++ * This file defines the version script giving the user-exported symbols in
++ * the DSO.  We can define local symbols here called VDSO* to make their
++ * values visible using the asm-x86/vdso.h macros from the kernel proper.
++ */
++/*
++ * Linker script for vDSO.  This is an ELF shared object prelinked to
++ * its virtual address, and with only one read-only segment.
++ * This script controls its layout.
++ */
++SECTIONS
++{
++ . = 0xffffffffff700000 + SIZEOF_HEADERS;
++ .hash : { *(.hash) } :text
++ .gnu.hash : { *(.gnu.hash) }
++ .dynsym : { *(.dynsym) }
++ .dynstr : { *(.dynstr) }
++ .gnu.version : { *(.gnu.version) }
++ .gnu.version_d : { *(.gnu.version_d) }
++ .gnu.version_r : { *(.gnu.version_r) }
++ .note : { *(.note.*) } :text :note
++ .eh_frame_hdr : { *(.eh_frame_hdr) } :text :eh_frame_hdr
++ .eh_frame : { KEEP (*(.eh_frame)) } :text
++ .dynamic : { *(.dynamic) } :text :dynamic
++ .rodata : { *(.rodata*) } :text
++ .data : {
++       *(.data*)
++       *(.sdata*)
++       *(.got.plt) *(.got)
++       *(.gnu.linkonce.d.*)
++       *(.bss*)
++       *(.dynbss*)
++       *(.gnu.linkonce.b.*)
++ }
++ .altinstructions : { *(.altinstructions) }
++ .altinstr_replacement : { *(.altinstr_replacement) }
++ /*
++	 * Align the actual code well away from the non-instruction data.
++	 * This is the best thing for the I-cache.
++	 */
++ . = ALIGN(0x100);
++ .text : { *(.text*) } :text =0x90909090
++}
++/*
++ * Very old versions of ld do not recognize this name token; use the constant.
++ */
++/*
++ * We must supply the ELF program headers explicitly to get just one
++ * PT_LOAD segment, and set the flags explicitly to make segments read-only.
++ */
++PHDRS
++{
++ text PT_LOAD FLAGS(5) FILEHDR PHDRS; /* PF_R|PF_X */
++ dynamic PT_DYNAMIC FLAGS(4); /* PF_R */
++ note PT_NOTE FLAGS(4); /* PF_R */
++ eh_frame_hdr 0x6474e550;
++}
++/*
++ * This controls what userland symbols we export from the vDSO.
++ */
++VERSION {
++ LINUX_2.6 {
++ global:
++  clock_gettime;
++  __vdso_clock_gettime;
++  gettimeofday;
++  __vdso_gettimeofday;
++  getcpu;
++  __vdso_getcpu;
++  time;
++  __vdso_time;
++ local: *;
++ };
++}
++VDSO64_PRELINK = 0xffffffffff700000;
+diff --git a/arch/x86/vdso/vdso32-int80-syms.lds b/arch/x86/vdso/vdso32-int80-syms.lds
+new file mode 100644
+index 000000000000..d01bb70c712d
+--- /dev/null
++++ b/arch/x86/vdso/vdso32-int80-syms.lds
+@@ -0,0 +1,6 @@
++VDSO32_NOTE_MASK = 0x01f0;
++VDSO32_PRELINK = 0x0;
++VDSO32_rt_sigreturn = 0x0410;
++VDSO32_sigreturn = 0x0400;
++VDSO32_vsyscall = 0x0420;
++VDSO32_vsyscall_eh_frame_size = 0x040;
+diff --git a/arch/x86/vdso/vdso32-syms.lds b/arch/x86/vdso/vdso32-syms.lds
+new file mode 100644
+index 000000000000..581d7523de54
+--- /dev/null
++++ b/arch/x86/vdso/vdso32-syms.lds
+@@ -0,0 +1,7 @@
++VDSO32_NOTE_MASK = 0x01f0;
++VDSO32_PRELINK = 0x0;
++VDSO32_SYSENTER_RETURN = 0x0430;
++VDSO32_rt_sigreturn = 0x0410;
++VDSO32_sigreturn = 0x0400;
++VDSO32_vsyscall = 0x0420;
++VDSO32_vsyscall_eh_frame_size = 0x040;
+diff --git a/arch/x86/vdso/vdso32-syscall-syms.lds b/arch/x86/vdso/vdso32-syscall-syms.lds
+new file mode 100644
+index 000000000000..d01bb70c712d
+--- /dev/null
++++ b/arch/x86/vdso/vdso32-syscall-syms.lds
+@@ -0,0 +1,6 @@
++VDSO32_NOTE_MASK = 0x01f0;
++VDSO32_PRELINK = 0x0;
++VDSO32_rt_sigreturn = 0x0410;
++VDSO32_sigreturn = 0x0400;
++VDSO32_vsyscall = 0x0420;
++VDSO32_vsyscall_eh_frame_size = 0x040;
+diff --git a/arch/x86/vdso/vdso32-sysenter-syms.lds b/arch/x86/vdso/vdso32-sysenter-syms.lds
+new file mode 100644
+index 000000000000..581d7523de54
+--- /dev/null
++++ b/arch/x86/vdso/vdso32-sysenter-syms.lds
+@@ -0,0 +1,7 @@
++VDSO32_NOTE_MASK = 0x01f0;
++VDSO32_PRELINK = 0x0;
++VDSO32_SYSENTER_RETURN = 0x0430;
++VDSO32_rt_sigreturn = 0x0410;
++VDSO32_sigreturn = 0x0400;
++VDSO32_vsyscall = 0x0420;
++VDSO32_vsyscall_eh_frame_size = 0x040;
+diff --git a/arch/x86/vdso/vdso32/vdso32.lds b/arch/x86/vdso/vdso32/vdso32.lds
+new file mode 100644
+index 000000000000..6c7d2269de97
+--- /dev/null
++++ b/arch/x86/vdso/vdso32/vdso32.lds
+@@ -0,0 +1,115 @@
++/*
++ *
++ * Automatically generated file; DO NOT EDIT.
++ * Linux/x86 3.13.0 Kernel Configuration
++ *
++ */
++/*
++ * Helper macros to use CONFIG_ options in C/CPP expressions. Note that
++ * these only work with boolean and tristate options.
++ */
++/*
++ * Getting something that works in C and CPP for an arg that may or may
++ * not be defined is tricky.  Here, if we have "#define CONFIG_BOOGER 1"
++ * we match on the placeholder define, insert the "0," for arg1 and generate
++ * the triplet (0, 1, 0).  Then the last step cherry picks the 2nd arg (a one).
++ * When CONFIG_BOOGER is not defined, we generate a (... 1, 0) pair, and when
++ * the last step cherry picks the 2nd arg, we get a zero.
++ */
++/*
++ * IS_ENABLED(CONFIG_FOO) evaluates to 1 if CONFIG_FOO is set to 'y' or 'm',
++ * 0 otherwise.
++ *
++ */
++/*
++ * IS_BUILTIN(CONFIG_FOO) evaluates to 1 if CONFIG_FOO is set to 'y', 0
++ * otherwise. For boolean options, this is equivalent to
++ * IS_ENABLED(CONFIG_FOO).
++ */
++/*
++ * IS_MODULE(CONFIG_FOO) evaluates to 1 if CONFIG_FOO is set to 'm', 0
++ * otherwise.
++ */
++/*
++ * Linker script for 32-bit vDSO.
++ * We #include the file to define the layout details.
++ * Here we only choose the prelinked virtual address.
++ *
++ * This file defines the version script giving the user-exported symbols in
++ * the DSO.  We can define local symbols here called VDSO* to make their
++ * values visible using the asm-x86/vdso.h macros from the kernel proper.
++ */
++/*
++ * Linker script for vDSO.  This is an ELF shared object prelinked to
++ * its virtual address, and with only one read-only segment.
++ * This script controls its layout.
++ */
++SECTIONS
++{
++ . = 0 + SIZEOF_HEADERS;
++ .hash : { *(.hash) } :text
++ .gnu.hash : { *(.gnu.hash) }
++ .dynsym : { *(.dynsym) }
++ .dynstr : { *(.dynstr) }
++ .gnu.version : { *(.gnu.version) }
++ .gnu.version_d : { *(.gnu.version_d) }
++ .gnu.version_r : { *(.gnu.version_r) }
++ .note : { *(.note.*) } :text :note
++ .eh_frame_hdr : { *(.eh_frame_hdr) } :text :eh_frame_hdr
++ .eh_frame : { KEEP (*(.eh_frame)) } :text
++ .dynamic : { *(.dynamic) } :text :dynamic
++ .rodata : { *(.rodata*) } :text
++ .data : {
++       *(.data*)
++       *(.sdata*)
++       *(.got.plt) *(.got)
++       *(.gnu.linkonce.d.*)
++       *(.bss*)
++       *(.dynbss*)
++       *(.gnu.linkonce.b.*)
++ }
++ .altinstructions : { *(.altinstructions) }
++ .altinstr_replacement : { *(.altinstr_replacement) }
++ /*
++	 * Align the actual code well away from the non-instruction data.
++	 * This is the best thing for the I-cache.
++	 */
++ . = ALIGN(0x100);
++ .text : { *(.text*) } :text =0x90909090
++}
++/*
++ * Very old versions of ld do not recognize this name token; use the constant.
++ */
++/*
++ * We must supply the ELF program headers explicitly to get just one
++ * PT_LOAD segment, and set the flags explicitly to make segments read-only.
++ */
++PHDRS
++{
++ text PT_LOAD FLAGS(5) FILEHDR PHDRS; /* PF_R|PF_X */
++ dynamic PT_DYNAMIC FLAGS(4); /* PF_R */
++ note PT_NOTE FLAGS(4); /* PF_R */
++ eh_frame_hdr 0x6474e550;
++}
++/* The ELF entry point can be used to set the AT_SYSINFO value.  */
++ENTRY(__kernel_vsyscall);
++/*
++ * This controls what userland symbols we export from the vDSO.
++ */
++VERSION
++{
++ LINUX_2.5 {
++ global:
++  __kernel_vsyscall;
++  __kernel_sigreturn;
++  __kernel_rt_sigreturn;
++ local: *;
++ };
++}
++/*
++ * Symbols we define here called VDSO* get their values into vdso32-syms.h.
++ */
++VDSO32_PRELINK = 0;
++VDSO32_vsyscall = __kernel_vsyscall;
++VDSO32_sigreturn = __kernel_sigreturn;
++VDSO32_rt_sigreturn = __kernel_rt_sigreturn;
+diff --git a/arch/x86/vdso/vdsox32-syms.lds b/arch/x86/vdso/vdsox32-syms.lds
+new file mode 100644
+index 000000000000..db57dec55a92
+--- /dev/null
++++ b/arch/x86/vdso/vdsox32-syms.lds
+@@ -0,0 +1 @@
++VDSOX32_PRELINK = 0x0;
+diff --git a/arch/x86/vdso/vdsox32.lds b/arch/x86/vdso/vdsox32.lds
+new file mode 100644
+index 000000000000..5bb0824800d0
+--- /dev/null
++++ b/arch/x86/vdso/vdsox32.lds
+@@ -0,0 +1,107 @@
++/*
++ *
++ * Automatically generated file; DO NOT EDIT.
++ * Linux/x86 3.13.0 Kernel Configuration
++ *
++ */
++/*
++ * Helper macros to use CONFIG_ options in C/CPP expressions. Note that
++ * these only work with boolean and tristate options.
++ */
++/*
++ * Getting something that works in C and CPP for an arg that may or may
++ * not be defined is tricky.  Here, if we have "#define CONFIG_BOOGER 1"
++ * we match on the placeholder define, insert the "0," for arg1 and generate
++ * the triplet (0, 1, 0).  Then the last step cherry picks the 2nd arg (a one).
++ * When CONFIG_BOOGER is not defined, we generate a (... 1, 0) pair, and when
++ * the last step cherry picks the 2nd arg, we get a zero.
++ */
++/*
++ * IS_ENABLED(CONFIG_FOO) evaluates to 1 if CONFIG_FOO is set to 'y' or 'm',
++ * 0 otherwise.
++ *
++ */
++/*
++ * IS_BUILTIN(CONFIG_FOO) evaluates to 1 if CONFIG_FOO is set to 'y', 0
++ * otherwise. For boolean options, this is equivalent to
++ * IS_ENABLED(CONFIG_FOO).
++ */
++/*
++ * IS_MODULE(CONFIG_FOO) evaluates to 1 if CONFIG_FOO is set to 'm', 0
++ * otherwise.
++ */
++/*
++ * Linker script for x32 vDSO.
++ * We #include the file to define the layout details.
++ * Here we only choose the prelinked virtual address.
++ *
++ * This file defines the version script giving the user-exported symbols in
++ * the DSO.  We can define local symbols here called VDSO* to make their
++ * values visible using the asm-x86/vdso.h macros from the kernel proper.
++ */
++/*
++ * Linker script for vDSO.  This is an ELF shared object prelinked to
++ * its virtual address, and with only one read-only segment.
++ * This script controls its layout.
++ */
++SECTIONS
++{
++ . = 0 + SIZEOF_HEADERS;
++ .hash : { *(.hash) } :text
++ .gnu.hash : { *(.gnu.hash) }
++ .dynsym : { *(.dynsym) }
++ .dynstr : { *(.dynstr) }
++ .gnu.version : { *(.gnu.version) }
++ .gnu.version_d : { *(.gnu.version_d) }
++ .gnu.version_r : { *(.gnu.version_r) }
++ .note : { *(.note.*) } :text :note
++ .eh_frame_hdr : { *(.eh_frame_hdr) } :text :eh_frame_hdr
++ .eh_frame : { KEEP (*(.eh_frame)) } :text
++ .dynamic : { *(.dynamic) } :text :dynamic
++ .rodata : { *(.rodata*) } :text
++ .data : {
++       *(.data*)
++       *(.sdata*)
++       *(.got.plt) *(.got)
++       *(.gnu.linkonce.d.*)
++       *(.bss*)
++       *(.dynbss*)
++       *(.gnu.linkonce.b.*)
++ }
++ .altinstructions : { *(.altinstructions) }
++ .altinstr_replacement : { *(.altinstr_replacement) }
++ /*
++	 * Align the actual code well away from the non-instruction data.
++	 * This is the best thing for the I-cache.
++	 */
++ . = ALIGN(0x100);
++ .text : { *(.text*) } :text =0x90909090
++}
++/*
++ * Very old versions of ld do not recognize this name token; use the constant.
++ */
++/*
++ * We must supply the ELF program headers explicitly to get just one
++ * PT_LOAD segment, and set the flags explicitly to make segments read-only.
++ */
++PHDRS
++{
++ text PT_LOAD FLAGS(5) FILEHDR PHDRS; /* PF_R|PF_X */
++ dynamic PT_DYNAMIC FLAGS(4); /* PF_R */
++ note PT_NOTE FLAGS(4); /* PF_R */
++ eh_frame_hdr 0x6474e550;
++}
++/*
++ * This controls what userland symbols we export from the vDSO.
++ */
++VERSION {
++ LINUX_2.6 {
++ global:
++  __vdso_clock_gettime;
++  __vdso_gettimeofday;
++  __vdso_getcpu;
++  __vdso_time;
++ local: *;
++ };
++}
++VDSOX32_PRELINK = 0;
+diff --git a/drivers/hid/hid-core.c b/drivers/hid/hid-core.c
+index ec791e169f8f..54ee11a2eea2 100644
+--- a/drivers/hid/hid-core.c
++++ b/drivers/hid/hid-core.c
+@@ -1691,11 +1691,6 @@ int hid_connect(struct hid_device *hdev, unsigned int connect_mask)
+ 		hid_warn(hdev,
+ 			 "can't create sysfs country code attribute err: %d\n", ret);
+ 
+-	ret = device_create_bin_file(&hdev->dev, &dev_bin_attr_report_desc);
+-	if (ret)
+-		hid_warn(hdev,
+-			 "can't create sysfs report descriptor attribute err: %d\n", ret);
+-
+ 	hid_info(hdev, "%s: %s HID v%x.%02x %s [%s] on %s\n",
+ 		 buf, bus, hdev->version >> 8, hdev->version & 0xff,
+ 		 type, hdev->name, hdev->phys);
+@@ -1707,7 +1702,6 @@ EXPORT_SYMBOL_GPL(hid_connect);
+ void hid_disconnect(struct hid_device *hdev)
+ {
+ 	device_remove_file(&hdev->dev, &dev_attr_country);
+-	device_remove_bin_file(&hdev->dev, &dev_bin_attr_report_desc);
+ 	if (hdev->claimed & HID_CLAIMED_INPUT)
+ 		hidinput_disconnect(hdev);
+ 	if (hdev->claimed & HID_CLAIMED_HIDDEV)
+@@ -2237,7 +2231,15 @@ static struct attribute *hid_dev_attrs[] = {
+ 	&dev_attr_modalias.attr,
+ 	NULL,
+ };
+-ATTRIBUTE_GROUPS(hid_dev);
++static struct bin_attribute *hid_dev_bin_attrs[] = {
++	&dev_bin_attr_report_desc,
++	NULL
++};
++static const struct attribute_group hid_dev_group = {
++	.attrs = hid_dev_attrs,
++	.bin_attrs = hid_dev_bin_attrs,
++};
++__ATTRIBUTE_GROUPS(hid_dev);
+ 
+ static int hid_uevent(struct device *dev, struct kobj_uevent_env *env)
+ {
+diff --git a/drivers/pci/pcie/aspm.c b/drivers/pci/pcie/aspm.c
+index 317e3558a35e..2dfe7fdb77e7 100644
+--- a/drivers/pci/pcie/aspm.c
++++ b/drivers/pci/pcie/aspm.c
+@@ -834,21 +834,15 @@ static ssize_t link_state_store(struct device *dev,
+ {
+ 	struct pci_dev *pdev = to_pci_dev(dev);
+ 	struct pcie_link_state *link, *root = pdev->link_state->root;
+-	u32 val, state = 0;
+-
+-	if (kstrtouint(buf, 10, &val))
+-		return -EINVAL;
++	u32 state;
+ 
+ 	if (aspm_disabled)
+ 		return -EPERM;
+-	if (n < 1 || val > 3)
+-		return -EINVAL;
+ 
+-	/* Convert requested state to ASPM state */
+-	if (val & PCIE_LINK_STATE_L0S)
+-		state |= ASPM_STATE_L0S;
+-	if (val & PCIE_LINK_STATE_L1)
+-		state |= ASPM_STATE_L1;
++	if (kstrtouint(buf, 10, &state))
++		return -EINVAL;
++	if ((state & ~ASPM_STATE_ALL) != 0)
++		return -EINVAL;
+ 
+ 	down_read(&pci_bus_sem);
+ 	mutex_lock(&aspm_lock);
+diff --git a/drivers/scsi/megaraid/megaraid_sas_base.c b/drivers/scsi/megaraid/megaraid_sas_base.c
+index 00ce3e269a43..dd0f76c5172e 100644
+--- a/drivers/scsi/megaraid/megaraid_sas_base.c
++++ b/drivers/scsi/megaraid/megaraid_sas_base.c
+@@ -234,7 +234,7 @@ struct megasas_cmd *megasas_get_cmd(struct megasas_instance
+  * @instance:		Adapter soft state
+  * @cmd:		Command packet to be returned to free command pool
+  */
+-inline void
++void
+ megasas_return_cmd(struct megasas_instance *instance, struct megasas_cmd *cmd)
+ {
+ 	unsigned long flags;
+diff --git a/kernel/time/timekeeping.c b/kernel/time/timekeeping.c
+index 99188ee5d9d0..8c85f988c539 100644
+--- a/kernel/time/timekeeping.c
++++ b/kernel/time/timekeeping.c
+@@ -1591,9 +1591,12 @@ static __always_inline void timekeeping_freqadjust(struct timekeeper *tk,
+ {
+ 	s64 interval = tk->cycle_interval;
+ 	s64 xinterval = tk->xtime_interval;
++	u32 base = tk->tkr_mono.clock->mult;
++	u32 max = tk->tkr_mono.clock->maxadj;
++	u32 cur_adj = tk->tkr_mono.mult;
+ 	s64 tick_error;
+ 	bool negative;
+-	u32 adj;
++	u32 adj_scale;
+ 
+ 	/* Remove any current error adj from freq calculation */
+ 	if (tk->ntp_err_mult)
+@@ -1612,13 +1615,33 @@ static __always_inline void timekeeping_freqadjust(struct timekeeper *tk,
+ 	/* preserve the direction of correction */
+ 	negative = (tick_error < 0);
+ 
+-	/* Sort out the magnitude of the correction */
++	/* If any adjustment would pass the max, just return */
++	if (negative && (cur_adj - 1) <= (base - max))
++		return;
++	if (!negative && (cur_adj + 1) >= (base + max))
++		return;
++	/*
++	 * Sort out the magnitude of the correction, but
++	 * avoid making so large a correction that we go
++	 * over the max adjustment.
++	 */
++	adj_scale = 0;
+ 	tick_error = abs(tick_error);
+-	for (adj = 0; tick_error > interval; adj++)
++	while (tick_error > interval) {
++		u32 adj = 1 << (adj_scale + 1);
++
++		/* Check if adjustment gets us within 1 unit from the max */
++		if (negative && (cur_adj - adj) <= (base - max))
++			break;
++		if (!negative && (cur_adj + adj) >= (base + max))
++			break;
++
++		adj_scale++;
+ 		tick_error >>= 1;
++	}
+ 
+ 	/* scale the corrections */
+-	timekeeping_apply_adjustment(tk, offset, negative, adj);
++	timekeeping_apply_adjustment(tk, offset, negative, adj_scale);
+ }
+ 
+ /*
+diff --git a/security/tomoyo/policy/exception_policy.conf.default b/security/tomoyo/policy/exception_policy.conf.default
+deleted file mode 100644
+index 2678df4964ee..000000000000
+--- a/security/tomoyo/policy/exception_policy.conf.default
++++ /dev/null
+@@ -1,2 +0,0 @@
+-initialize_domain /sbin/modprobe from any
+-initialize_domain /sbin/hotplug from any
+-- 
+1.9.3
+

@@ -1,0 +1,26 @@
+From 2a015391615e18613e91b3215b19ef2b7f788b12 Mon Sep 17 00:00:00 2001
+From: Junjie Mao <junjie.mao@enight.me>
+Date: Tue, 25 Apr 2017 09:55:18 +0800
+Subject: [PATCH 14/16] fs: explicitly cast to u32 before shifting
+
+Signed-off-by: Junjie Mao <junjie.mao@enight.me>
+---
+ fs/compat_ioctl.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/fs/compat_ioctl.c b/fs/compat_ioctl.c
+index dcf26537c935..a52ca5cba015 100644
+--- a/fs/compat_ioctl.c
++++ b/fs/compat_ioctl.c
+@@ -811,7 +811,7 @@ static int compat_ioctl_preallocate(struct file *file,
+  */
+ #define XFORM(i) (((i) ^ ((i) << 27) ^ ((i) << 17)) & 0xffffffff)
+ 
+-#define COMPATIBLE_IOCTL(cmd) XFORM(cmd),
++#define COMPATIBLE_IOCTL(cmd) XFORM((u32)cmd),
+ /* ioctl should not be warned about even if it's not implemented.
+    Valid reasons to use this:
+    - It is implemented with ->compat_ioctl on some device, but programs
+-- 
+1.9.3
+

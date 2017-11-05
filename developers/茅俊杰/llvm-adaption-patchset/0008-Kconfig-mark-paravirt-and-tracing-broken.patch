@@ -1,0 +1,38 @@
+From 1963c7d2482b7b91786059beb22eee004d66bc69 Mon Sep 17 00:00:00 2001
+From: Junjie Mao <junjie.mao@enight.me>
+Date: Tue, 25 Apr 2017 09:03:00 +0800
+Subject: [PATCH 08/16] Kconfig: mark paravirt and tracing broken
+
+Signed-off-by: Junjie Mao <junjie.mao@enight.me>
+---
+ arch/x86/Kconfig     | 1 +
+ kernel/trace/Kconfig | 1 +
+ 2 files changed, 2 insertions(+)
+
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index 416fb06070b6..8b592bbdaecc 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -655,6 +655,7 @@ if HYPERVISOR_GUEST
+ 
+ config PARAVIRT
+ 	bool "Enable paravirtualization code"
++	depends on BROKEN
+ 	---help---
+ 	  This changes the kernel so it can modify itself when it is run
+ 	  under a hypervisor, potentially improving performance significantly
+diff --git a/kernel/trace/Kconfig b/kernel/trace/Kconfig
+index e45db6b0d878..de3d485e5a62 100644
+--- a/kernel/trace/Kconfig
++++ b/kernel/trace/Kconfig
+@@ -120,6 +120,7 @@ config TRACING_SUPPORT
+ 	# irqflags tracing for your architecture.
+ 	depends on TRACE_IRQFLAGS_SUPPORT || PPC32
+ 	depends on STACKTRACE_SUPPORT
++	depends on BROKEN && (CONFIG_X86 || CONFIG_X86_64)
+ 	default y
+ 
+ if TRACING_SUPPORT
+-- 
+1.9.3
+

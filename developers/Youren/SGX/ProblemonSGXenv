@@ -1,0 +1,7 @@
+This is a list on the problem encountered when build sgx Environment
+1. Cmakefile error for dynamic-application-loader-host-interface   install FILES given no DESTINATION!
+Error reason: SYSTEMD_DIR var is empty which rely on pkg-config command.
+solution: install pkg-config
+2. app in samplecode says no library found
+reason: Not install PSW
+Solution: install PSW

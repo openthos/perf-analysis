@@ -1,0 +1,26 @@
+From 262c2bcb3c703effdcb23d207ffc72b0714ee777 Mon Sep 17 00:00:00 2001
+From: Junjie Mao <junjie.mao@enight.me>
+Date: Tue, 25 Apr 2017 09:52:26 +0800
+Subject: [PATCH 13/16] scsi: suppress a maybe_unused warning
+
+Signed-off-by: Junjie Mao <junjie.mao@enight.me>
+---
+ include/scsi/osd_types.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/include/scsi/osd_types.h b/include/scsi/osd_types.h
+index 48e8a165e136..c7ae7211d15d 100644
+--- a/include/scsi/osd_types.h
++++ b/include/scsi/osd_types.h
+@@ -28,7 +28,7 @@ struct osd_obj_id {
+ 	osd_id id;
+ };
+ 
+-static const struct __weak osd_obj_id osd_root_object = {0, 0};
++static const struct osd_obj_id osd_root_object __maybe_unused = {0, 0};
+ 
+ struct osd_attr {
+ 	u32 attr_page;
+-- 
+1.9.3
+

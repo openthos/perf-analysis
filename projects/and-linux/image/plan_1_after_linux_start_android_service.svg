@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- 由 Microsoft Visio, SVG Export 生成 plan_1_after_linux_start_android_service.svg 页-1 -->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ev="http://www.w3.org/2001/xml-events"
+		xmlns:v="http://schemas.microsoft.com/visio/2003/SVGExtensions/" width="7.68832in" height="5.11944in"
+		viewBox="0 0 553.559 368.6" xml:space="preserve" color-interpolation-filters="sRGB" class="st17">
+	<v:documentProperties v:langID="2052">
+		<v:userDefs>
+			<v:ud v:nameU="msvNoAutoConnect" v:val="VT0(1):26"/>
+		</v:userDefs>
+	</v:documentProperties>
+
+	<style type="text/css">
+	<![CDATA[
+		.st1 {fill:none;stroke:#000000;stroke-dasharray:3.59999,2.16;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.24}
+		.st2 {fill:#000000;font-family:等线;font-size:0.666664em}
+		.st3 {font-family:Consolas;font-size:1em}
+		.st4 {fill:#fff2cc;fill-opacity:0.2;stroke:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.24}
+		.st5 {fill:#000000;font-family:等线;font-size:0.833336em}
+		.st6 {fill:#dbeef3;stroke:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.24}
+		.st7 {fill:#eeeaf2;stroke:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.24}
+		.st8 {fill:#000000;font-family:Consolas;font-size:0.666664em}
+		.st9 {marker-end:url(#mrkr2-54);stroke:#000000;stroke-dasharray:5.24999,3.74999;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.749999}
+		.st10 {fill:#000000;fill-opacity:1;stroke:#000000;stroke-opacity:1;stroke-width:0.22935754622792}
+		.st11 {marker-end:url(#mrkr2-54);stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.749999}
+		.st12 {fill:#ffffff;stroke:none;stroke-linecap:butt;stroke-width:7.2}
+		.st13 {fill:none;stroke:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.749999}
+		.st14 {fill:none;stroke:#ff0000;stroke-linecap:round;stroke-linejoin:round;stroke-width:2.75}
+		.st15 {fill:#ddd6e5;stroke:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.24}
+		.st16 {font-size:1em}
+		.st17 {fill:none;fill-rule:evenodd;font-size:12px;overflow:visible;stroke-linecap:square;stroke-miterlimit:3}
+	]]>
+	</style>
+
+	<defs id="Markers">
+		<g id="lend2">
+			<path d="M 1 1 L 0 0 L 1 -1 L 1 1 " style="stroke:none"/>
+		</g>
+		<marker id="mrkr2-54" class="st10" v:arrowType="2" v:arrowSize="2" v:setback="0" refX="-0" orient="auto"
+				markerUnits="strokeWidth" overflow="visible">
+			<use xlink:href="#lend2" transform="scale(-4.3600047892311,-4.3600047892311) "/>
+		</marker>
+	</defs>
+	<g v:mID="0" v:index="1" v:groupContext="foregroundPage">
+		<title>页-1</title>
+		<v:pageProperties v:drawingScale="0.0393701" v:pageScale="0.0393701" v:drawingUnits="24" v:shadowOffsetX="8.50393"
+				v:shadowOffsetY="-8.50393"/>
+		<v:layer v:name="连接线" v:index="0"/>
+		<g id="shape1-1" v:mID="1" v:groupContext="shape" transform="translate(18.12,-18.12)">
+			<title>矩形.186</title>
+			<desc>听取师兄的建议设计中间层的 Android 与 Linux 程序交互设想以 Linux 中的程序启动 Android 中的...</desc>
+			<v:userDefs/>
+			<v:textBlock v:margins="rect(3.99999,3.99999,3.99999,3.99999)" v:tabSpace="42.5196" v:verticalAlign="0"/>
+			<v:textRect cx="258.66" cy="202.419" width="517.33" height="332.362"/>
+			<path d="M0 368.6 L517.32 368.6 L517.32 36.24 L0 36.24 L0 368.6 Z" class="st1"/>
+			<text x="4" y="47.69" class="st2" v:langID="2052"><v:paragraph/><v:tabList/>听取师兄的建议，设计中间层的<tspan class="st3"> </tspan><tspan
+						class="st3">Android </tspan>与<tspan class="st3"> </tspan><tspan class="st3">Linux </tspan>程序交互设想，以<tspan
+						class="st3"> </tspan><tspan class="st3">Linux </tspan>中的程序启动<tspan class="st3"> </tspan><tspan class="st3">Android </tspan>中的<tspan
+						class="st3"> </tspan><tspan class="st3">Service </tspan>为例</text>		</g>
+		<g id="shape2-14" v:mID="2" v:groupContext="shape" transform="translate(199.537,-228.439)">
+			<title>矩形.188</title>
+			<desc>Android Framework 层</desc>
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:val="VT0(15):26"/>
+			</v:userDefs>
+			<v:textBlock v:margins="rect(3.99999,3.99999,3.99999,3.99999)" v:tabSpace="42.5196" v:verticalAlign="0"/>
+			<v:textRect cx="85.0389" cy="318.993" width="170.08" height="99.2125"/>
+			<rect x="0" y="269.387" width="170.079" height="99.2125" class="st4"/>
+			<text x="4" y="282.39" class="st5" v:langID="2052"><v:paragraph/><v:tabList/>Android Framework 层</text>		</g>
+		<g id="shape3-17" v:mID="3" v:groupContext="shape" transform="translate(29.4586,-242.612)">
+			<title>矩形.189</title>
+			<desc>Linux程序</desc>
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:val="VT0(15):26"/>
+			</v:userDefs>
+			<v:textBlock v:margins="rect(3.99999,3.99999,3.99999,3.99999)" v:tabSpace="42.5196" v:verticalAlign="0"/>
+			<v:textRect cx="72.9917" cy="326.08" width="145.99" height="85.0393"/>
+			<rect x="0" y="283.56" width="145.984" height="85.0393" class="st4"/>
+			<text x="4" y="296.56" class="st5" v:langID="2052"><v:paragraph/><v:tabList/>Linux程序</text>		</g>
+		<g id="shape4-20" v:mID="4" v:groupContext="shape" transform="translate(39.9742,-258.628)">
+			<title>矩形.190</title>
+			<desc>Linux 中的 APP 1</desc>
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:val="VT0(15):26"/>
+			</v:userDefs>
+			<v:textBlock v:margins="rect(3.99999,3.99999,3.99999,3.99999)" v:tabSpace="42.5196" v:verticalAlign="0"/>
+			<v:textRect cx="63.7791" cy="344.718" width="127.56" height="47.7637"/>
+			<rect x="0" y="320.836" width="127.559" height="47.7637" class="st6"/>
+			<text x="27.19" y="333.84" class="st5" v:langID="2052"><v:paragraph v:horizAlign="1"/><v:tabList/>Linux 中的 APP 1</text>		</g>
+		<g id="shape5-23" v:mID="5" v:groupContext="shape" transform="translate(45.36,-269.399)">
+			<title>矩形.191</title>
+			<desc>启动 APP2 的一个 Service</desc>
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:val="VT0(15):26"/>
+			</v:userDefs>
+			<v:textBlock v:margins="rect(3.99999,3.99999,3.99999,3.99999)" v:tabSpace="42.5196"/>
+			<v:textRect cx="57.5429" cy="359.812" width="115.09" height="17.5748"/>
+			<rect x="0" y="351.025" width="115.087" height="17.5748" class="st7"/>
+			<text x="6.75" y="362.3" class="st2" v:langID="2052"><v:paragraph v:horizAlign="1"/><v:tabList/>启动<tspan class="st3"> </tspan><tspan
+						class="st3">APP</tspan><tspan class="st3">2 </tspan>的一个<tspan class="st3"> </tspan><tspan class="st3">Service</tspan> </text>		</g>
+		<g id="shape6-31" v:mID="6" v:groupContext="shape" transform="translate(206.624,-236.588)">
+			<title>矩形.192</title>
+			<desc>System Server</desc>
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:val="VT0(15):26"/>
+			</v:userDefs>
+			<v:textBlock v:margins="rect(3.99999,3.99999,3.99999,3.99999)" v:tabSpace="42.5196" v:verticalAlign="0"/>
+			<v:textRect cx="78.3066" cy="335.008" width="156.62" height="67.181"/>
+			<rect x="0" y="301.419" width="156.614" height="67.181" class="st6"/>
+			<text x="48.2" y="314.42" class="st5" v:langID="2052"><v:paragraph v:horizAlign="1"/><v:tabList/>System Server</text>		</g>
+		<g id="shape7-34" v:mID="7" v:groupContext="shape" transform="translate(217.665,-268.62)">
+			<title>矩形.193</title>
+			<desc>ActivityManagerService</desc>
+			<v:userDefs/>
+			<v:textBlock v:margins="rect(3.99999,3.99999,3.99999,3.99999)" v:tabSpace="42.5196"/>
+			<v:textRect cx="67.1738" cy="359.812" width="134.35" height="17.5748"/>
+			<rect x="0" y="351.025" width="134.348" height="17.5748" class="st7"/>
+			<text x="17.31" y="362.81" class="st5" v:langID="2052"><v:paragraph v:horizAlign="1"/><v:tabList/>ActivityManagerService</text>		</g>
+		<g id="shape8-37" v:mID="8" v:groupContext="shape" transform="translate(217.665,-243.675)">
+			<title>矩形.194</title>
+			<desc>…</desc>
+			<v:userDefs/>
+			<v:textBlock v:margins="rect(3.99999,3.99999,3.99999,3.99999)" v:tabSpace="42.5196"/>
+			<v:textRect cx="67.1738" cy="359.812" width="134.35" height="17.5748"/>
+			<rect x="0" y="351.025" width="134.348" height="17.5748" class="st7"/>
+			<text x="63.68" y="362.81" class="st5" v:langID="2052"><v:paragraph v:horizAlign="1"/><v:tabList/>…</text>		</g>
+		<g id="shape9-40" v:mID="9" v:groupContext="shape" transform="translate(199.537,-136.891)">
+			<title>矩形.195</title>
+			<desc>Service Manager</desc>
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:val="VT0(15):26"/>
+			</v:userDefs>
+			<v:textBlock v:margins="rect(3.99999,3.99999,3.99999,3.99999)" v:tabSpace="42.5196" v:verticalAlign="0"/>
+			<v:textRect cx="78.3066" cy="359.812" width="156.62" height="17.5748"/>
+			<rect x="0" y="351.025" width="156.614" height="17.5748" class="st6"/>
+			<text x="42.6" y="364.02" class="st5" v:langID="2052"><v:paragraph v:horizAlign="1"/><v:tabList/>Service Manager</text>		</g>
+		<g id="shape10-43" v:mID="10" v:groupContext="shape" transform="translate(397.962,-221.352)">
+			<title>矩形.196</title>
+			<desc>Android 中的 APP 2</desc>
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:val="VT0(15):26"/>
+			</v:userDefs>
+			<v:textBlock v:margins="rect(3.99999,3.99999,3.99999,3.99999)" v:tabSpace="42.5196" v:verticalAlign="0"/>
+			<v:textRect cx="63.7791" cy="344.718" width="127.56" height="47.7637"/>
+			<rect x="0" y="320.836" width="127.559" height="47.7637" class="st6"/>
+			<text x="20.98" y="333.84" class="st5" v:langID="2052"><v:paragraph v:horizAlign="1"/><v:tabList/>Android 中的 APP 2</text>		</g>
+		<g id="shape11-46" v:mID="11" v:groupContext="shape" transform="translate(404.198,-228.439)">
+			<title>矩形.197</title>
+			<desc>Service</desc>
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:val="VT0(15):26"/>
+			</v:userDefs>
+			<v:textBlock v:margins="rect(3.99999,3.99999,3.99999,3.99999)" v:tabSpace="42.5196"/>
+			<v:textRect cx="57.5429" cy="359.812" width="115.09" height="17.5748"/>
+			<rect x="0" y="351.025" width="115.087" height="17.5748" class="st7"/>
+			<text x="42.15" y="362.21" class="st8" v:langID="2052"><v:paragraph v:horizAlign="1"/><v:tabList/>Service  </text>		</g>
+		<g id="shape12-49" v:mID="12" v:groupContext="shape" v:layerMember="0" transform="translate(188.907,-145.679)">
+			<title>动态连接线.198</title>
+			<path d="M10.63 368.6 L0 368.6 L0 236.87 L25.49 236.87 L28.76 236.87" class="st9"/>
+		</g>
+		<g id="shape13-55" v:mID="13" v:groupContext="shape" transform="translate(36.1909,-83.7417)">
+			<title>矩形.199</title>
+			<desc>内核</desc>
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:val="VT0(15):26"/>
+			</v:userDefs>
+			<v:textBlock v:margins="rect(3.99999,3.99999,3.99999,3.99999)" v:tabSpace="42.5196" v:verticalAlign="0"/>
+			<v:textRect cx="243.247" cy="348.26" width="486.5" height="40.6771"/>
+			<rect x="0" y="327.922" width="486.495" height="40.6771" class="st6"/>
+			<text x="233.25" y="340.92" class="st5" v:langID="2052"><v:paragraph v:horizAlign="1"/><v:tabList/>内核</text>		</g>
+		<g id="shape14-58" v:mID="14" v:groupContext="shape" transform="translate(397.111,-91.0901)">
+			<title>矩形.200</title>
+			<desc>…</desc>
+			<v:userDefs/>
+			<v:textBlock v:margins="rect(3.99999,3.99999,3.99999,3.99999)" v:tabSpace="42.5196"/>
+			<v:textRect cx="57.5429" cy="359.812" width="115.09" height="17.5748"/>
+			<rect x="0" y="351.025" width="115.087" height="17.5748" class="st7"/>
+			<text x="54.05" y="362.81" class="st5" v:langID="2052"><v:paragraph v:horizAlign="1"/><v:tabList/>…</text>		</g>
+		<g id="shape15-61" v:mID="15" v:groupContext="shape" v:layerMember="0" transform="translate(352.013,-237.227)">
+			<title>动态连接线.201</title>
+			<path d="M0 328.42 L14.77 328.42 L14.77 368.6 L48.91 368.6 L52.18 368.6" class="st9"/>
+		</g>
+		<g id="shape16-66" v:mID="16" v:groupContext="shape" transform="translate(397.962,-282.271)">
+			<title>矩形.202</title>
+			<desc>Zygote</desc>
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:val="VT0(15):26"/>
+			</v:userDefs>
+			<v:textBlock v:margins="rect(3.99999,3.99999,3.99999,3.99999)" v:tabSpace="42.5196" v:verticalAlign="0"/>
+			<v:textRect cx="63.7791" cy="357.85" width="127.56" height="21.4988"/>
+			<rect x="0" y="347.101" width="127.559" height="21.4988" class="st6"/>
+			<text x="48.69" y="360.1" class="st5" v:langID="2052"><v:paragraph v:horizAlign="1"/><v:tabList/>Zygote</text>		</g>
+		<g id="shape17-69" v:mID="17" v:groupContext="shape" v:layerMember="0" transform="translate(352.013,-280.931)">
+			<title>动态连接线.203</title>
+			<path d="M0 368.6 L17.6 368.6 L17.6 356.51 L42.68 356.51 L45.95 356.51" class="st11"/>
+		</g>
+		<g id="shape18-74" v:mID="18" v:groupContext="shape" v:layerMember="0" transform="translate(461.745,-269.12)">
+			<title>动态连接线.204</title>
+			<path d="M0 355.45 L0 365.33 L0 368.6" class="st11"/>
+		</g>
+		<g id="shape19-79" v:mID="19" v:groupContext="shape" v:layerMember="0" transform="translate(86.1548,-216.546)">
+			<title>动态连接线.205</title>
+			<path d="M0 325.16 L0 365.33 L0 368.6" class="st11"/>
+		</g>
+		<g id="shape20-84" v:mID="20" v:groupContext="shape" v:layerMember="0" transform="translate(171.237,-57.6229)">
+			<title>动态连接线.209</title>
+			<desc>虚线表示该过程是通过Binder连接</desc>
+			<v:userDefs/>
+			<v:textBlock v:margins="rect(3.99999,3.99999,3.99999,3.99999)" v:tabSpace="42.5196"/>
+			<v:textRect cx="-70.6103" cy="368.603" width="128.27" height="17.6036"/>
+			<path d="M0 368.6 L42.91 368.6 L46.18 368.6" class="st9"/>
+			<rect v:rectContext="textBkgnd" x="-129.647" y="363.803" width="118.074" height="9.59985" class="st12"/>
+			<text x="-129.65" y="371" class="st2" v:langID="2052"><v:paragraph v:horizAlign="1"/><v:tabList/>虚线表示该过程是通过Binder连接</text>		</g>
+		<g id="shape21-91" v:mID="21" v:groupContext="shape" transform="translate(171.465,-29.2735)">
+			<title>矩形.210</title>
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:val="VT0(15):26"/>
+			</v:userDefs>
+			<rect x="0" y="353.072" width="43.1139" height="15.5275" class="st6"/>
+		</g>
+		<g id="shape22-93" v:mID="22" v:groupContext="shape" transform="translate(36.2435,-27.4859)">
+			<title>工作表.211</title>
+			<desc>一个蓝色方框表示一个进程</desc>
+			<v:userDefs/>
+			<v:textBlock v:margins="rect(3.99999,3.99999,3.99999,3.99999)" v:tabSpace="42.5196"/>
+			<v:textRect cx="53.611" cy="359.725" width="107.23" height="17.7481"/>
+			<rect x="0" y="350.851" width="107.223" height="17.7481" class="st13"/>
+			<text x="5.61" y="362.13" class="st2" v:langID="2052"><v:paragraph v:horizAlign="1"/><v:tabList/>一个蓝色方框表示一个进程</text>		</g>
+		<g id="shape23-96" v:mID="23" v:groupContext="shape" transform="translate(338.067,-52.2365)">
+			<title>椭圆形.212</title>
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:val="VT0(15):26"/>
+			</v:userDefs>
+			<path d="M-0 363.78 A26.555 4.81847 180 0 1 53.11 363.78 A26.555 4.81847 180 1 1 0 363.78 Z" class="st14"/>
+		</g>
+		<g id="shape24-98" v:mID="24" v:groupContext="shape" transform="translate(241.755,-47.6989)">
+			<title>工作表.213</title>
+			<desc>设想需要修改的地方</desc>
+			<v:userDefs/>
+			<v:textBlock v:margins="rect(3.99999,3.99999,3.99999,3.99999)" v:tabSpace="42.5196"/>
+			<v:textRect cx="53.611" cy="359.725" width="107.23" height="17.7481"/>
+			<rect x="0" y="350.851" width="107.223" height="17.7481" class="st13"/>
+			<text x="17.61" y="362.13" class="st2" v:langID="2052"><v:paragraph v:horizAlign="1"/><v:tabList/>设想需要修改的地方</text>		</g>
+		<g id="shape25-101" v:mID="25" v:groupContext="shape" transform="translate(29.4586,-74.8135)">
+			<title>矩形.215</title>
+			<desc>Binder驱动</desc>
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:val="VT0(15):26"/>
+			</v:userDefs>
+			<v:textBlock v:margins="rect(3.99999,3.99999,3.99999,3.99999)" v:tabSpace="42.5196" v:verticalAlign="0"/>
+			<v:textRect cx="170.078" cy="326.08" width="340.16" height="85.0393"/>
+			<rect x="0" y="283.56" width="340.157" height="85.0393" class="st4"/>
+			<text x="4" y="296.56" class="st5" v:langID="2052"><v:paragraph/><v:tabList/>Binder驱动</text>		</g>
+		<g id="shape26-104" v:mID="26" v:groupContext="shape" transform="translate(183.663,-89.1281)">
+			<title>矩形.216</title>
+			<desc>/dev/binder</desc>
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:val="VT0(15):26"/>
+			</v:userDefs>
+			<v:textBlock v:margins="rect(3.99999,3.99999,3.99999,3.99999)" v:tabSpace="42.5196"/>
+			<v:textRect cx="57.5429" cy="359.812" width="115.09" height="17.5748"/>
+			<rect x="0" y="351.025" width="115.087" height="17.5748" class="st7"/>
+			<text x="33.35" y="362.21" class="st8" v:langID="2052"><v:paragraph v:horizAlign="1"/><v:tabList/>/dev/binder</text>		</g>
+		<g id="shape27-107" v:mID="27" v:groupContext="shape" transform="translate(29.4586,-184.301)">
+			<title>矩形.218</title>
+			<desc>Linux 与Android 中进程间通信方式的转换模块</desc>
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:val="VT0(15):26"/>
+			</v:userDefs>
+			<v:textBlock v:margins="rect(3.99999,3.99999,3.99999,3.99999)" v:tabSpace="42.5196" v:verticalAlign="0"/>
+			<v:textRect cx="63.7791" cy="352.477" width="127.56" height="32.2441"/>
+			<rect x="0" y="336.355" width="127.559" height="32.2441" class="st15"/>
+			<text x="7.54" y="349.36" class="st5" v:langID="2052"><v:paragraph v:horizAlign="1"/><v:tabList/>Linux 与Android 中进程间<tspan
+						x="18.78" dy="1.2em" class="st16">通信方式的转换模块</tspan></text>		</g>
+		<g id="shape28-111" v:mID="28" v:groupContext="shape" transform="translate(43.6318,-88.9861)">
+			<title>矩形.222</title>
+			<desc>Binder中间层</desc>
+			<v:userDefs/>
+			<v:textBlock v:margins="rect(3.99999,3.99999,3.99999,3.99999)" v:tabSpace="42.5196"/>
+			<v:textRect cx="57.5429" cy="359.812" width="115.09" height="17.5748"/>
+			<rect x="0" y="351.025" width="115.087" height="17.5748" class="st7"/>
+			<text x="28.75" y="362.81" class="st5" v:langID="2052"><v:paragraph v:horizAlign="1"/><v:tabList/>Binder中间层</text>		</g>
+		<g id="shape29-114" v:mID="29" v:groupContext="shape" v:layerMember="0" transform="translate(86.1548,-104.911)">
+			<title>动态连接线.220</title>
+			<path d="M0 289.21 L0 365.33 L0 368.6" class="st11"/>
+		</g>
+		<g id="shape30-119" v:mID="30" v:groupContext="shape" transform="translate(43.2101,-267.49)">
+			<title>椭圆形.221</title>
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:val="VT0(15):26"/>
+			</v:userDefs>
+			<path d="M0 357.9 A59.2406 10.7494 180 1 1 118.48 357.9 A59.2406 10.7494 180 0 1 0 357.9 Z" class="st14"/>
+		</g>
+		<g id="shape31-121" v:mID="31" v:groupContext="shape" transform="translate(43.2775,-88.7998)">
+			<title>椭圆形.217</title>
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:val="VT0(15):26"/>
+			</v:userDefs>
+			<path d="M0 357.9 A59.2406 10.7494 180 1 1 118.48 357.9 A59.2406 10.7494 180 0 1 0 357.9 Z" class="st14"/>
+		</g>
+		<g id="shape32-123" v:mID="32" v:groupContext="shape" v:layerMember="0" transform="translate(158.719,-97.9179)">
+			<title>动态连接线.223</title>
+			<path d="M0 368.6 L21.67 368.6 L24.94 368.6" class="st11"/>
+		</g>
+		<g id="shape33-128" v:mID="33" v:groupContext="shape" transform="translate(27.208,-181.113)">
+			<title>椭圆形.208</title>
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:val="VT0(15):26"/>
+			</v:userDefs>
+			<path d="M-0 348.26 A67.1749 20.3388 180 0 1 134.35 348.26 A67.1749 20.3388 180 0 1 -0 348.26 Z" class="st14"/>
+		</g>
+		<g id="shape34-130" v:mID="34" v:groupContext="shape" v:layerMember="0" transform="translate(343.963,-33.344)">
+			<title>动态连接线.305</title>
+			<path d="M0 368.6 L45.5 368.6 L48.77 368.6" class="st11"/>
+		</g>
+		<g id="shape35-135" v:mID="35" v:groupContext="shape" transform="translate(252.085,-24.4659)">
+			<title>工作表.306</title>
+			<desc>包含其他IPC方式</desc>
+			<v:userDefs/>
+			<v:textBlock v:margins="rect(3.99999,3.99999,3.99999,3.99999)" v:tabSpace="42.5196"/>
+			<v:textRect cx="38.0204" cy="359.725" width="76.05" height="17.7481"/>
+			<rect x="0" y="350.851" width="76.0416" height="17.7481" class="st13"/>
+			<text x="8.34" y="362.13" class="st2" v:langID="2052"><v:paragraph v:horizAlign="1"/><v:tabList/>包含其他IPC方式</text>		</g>
+	</g>
+</svg>

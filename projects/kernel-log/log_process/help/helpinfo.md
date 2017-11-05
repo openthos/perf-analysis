@@ -5,14 +5,14 @@ ftrace 在内核态工作，用户通过 debugfs 接口来控制和使用 ftrace
 mount -t debugfs nodev /sys/kernel/debug
 ```
 ##2.在创建traceLog目录
-* 将openSchedEvents.sh、closeSchedEvents.sh、logProcess.py拷贝到该目录下
-* 给这三个文件添加可执行权限
+* 将openSchedEvents.sh,closeSchedEvents.sh,logProcess2.py,plot.py拷贝到该目录下
+* 给这4个文件添加可执行权限
 ```
 chmod a+x *.sh
 chmod a+x *.py
 ```
 ##3.在traceLog目录下创建bugEmu目录
-* 将模拟bug的代码存放在该目录下,例如将如下代码保存到sleep_bug.c，放在traceLog/bugEmu下
+将模拟bug的代码存放在该目录下,例如将如下代码保存到sleep_bug.c，放在traceLog/bugEmu下
 ```
 #include<stdio.h>
 #include<unistd.h>
@@ -41,17 +41,13 @@ root@thu-Lenovo-IdeaPad-Y580:/home/thu/traceLog#source closeSchedEvents.sh sleep
 该命令有一个脚本参数，为运行结束的程序名，这里为sleep_bug
 在脚本中会将记录保存到/home/thu/traceLog目录下，sleep_bug.select_log为筛选sleep_bug进程后的记录
 ```
-##7.查看并复制进程名
+
+##7.处理log信息的脚本调用
 ```
-vi sleep_bug.select_log
-```
-##８.处理log信息的脚本调用
-```
-root@thu-Lenovo-IdeaPad-Y580:/home/thu/traceLog# python logProcess.py sleep_bug.select_log sleep_bug-28831 0 10000000
+root@thu-Lenovo-IdeaPad-Y580:/home/thu/traceLog# python logProcess2.py sleep_bug.select_log  0 10000000
 该脚本的作用是统计某个特定进程的运行时间，睡眠时间，阻塞时间
 logProcess.py 为python脚本名
 sleep_bug.select_bug为需要分析记录的路径名称
-sleep_bug-28831 为需要关注进程的进程名和pid
 0：为开始时间点
 10000000：为结束时间点
 ```

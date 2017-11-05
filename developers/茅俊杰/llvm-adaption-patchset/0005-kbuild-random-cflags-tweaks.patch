@@ -1,0 +1,114 @@
+From af9949d3399dd8ac7fd7e350bf07fc3b4c54fd30 Mon Sep 17 00:00:00 2001
+From: Junjie Mao <junjie.mao@enight.me>
+Date: Tue, 25 Apr 2017 08:49:14 +0800
+Subject: [PATCH 05/16] kbuild: random cflags tweaks
+
+Signed-off-by: Junjie Mao <junjie.mao@enight.me>
+---
+ Makefile          | 30 ++++++++++++++++++++++++++----
+ arch/x86/Makefile |  6 ++++--
+ 2 files changed, 30 insertions(+), 6 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index f5d2769ce5f3..7edeca2c275f 100644
+--- a/Makefile
++++ b/Makefile
+@@ -301,8 +301,10 @@ HOSTCFLAGS   = -Wall -Wmissing-prototypes -Wstrict-prototypes -O2 -fomit-frame-p
+ HOSTCXXFLAGS = -O2
+ 
+ ifeq ($(shell $(HOSTCC) -v 2>&1 | grep -c "clang version"), 1)
+-HOSTCFLAGS  += -Wno-unused-value -Wno-unused-parameter \
+-		-Wno-missing-field-initializers -fno-delete-null-pointer-checks
++HOSTCFLAGS  += -Wno-unused-value -Wno-unused-parameter -Wno-missing-field-initializers
++endif
++ifneq ($(shell $(HOSTCC) -v 2>&1 | grep -c "clang version"), 1)
++HOSTCFLAGS  += -fno-delete-null-pointer-checks
+ endif
+ 
+ # Decide whether to build built-in, modular, or both.
+@@ -366,6 +368,19 @@ CFLAGS_KERNEL	=
+ AFLAGS_KERNEL	=
+ CFLAGS_GCOV	= -fprofile-arcs -ftest-coverage -fno-tree-loop-im
+ 
++ifeq ($(cc-name),clang)
++ifneq ($(CROSS_COMPILE),)
++CLANG_TARGET   := -target $(notdir $(CROSS_COMPILE:%-=%))
++GCC_TOOLCHAIN  := $(dir $(CROSS_COMPILE))
++endif
++ifneq ($(GCC_TOOLCHAIN),)
++CLANG_GCC_TC   := -gcc-toolchain $(GCC_TOOLCHAIN)
++endif
++ifneq ($(CLANG_ENABLE_IA),1)
++CLANG_IA_FLAG  = -no-integrated-as
++endif
++CLANG_FLAGS    := $(CLANG_TARGET) $(CLANG_GCC_TC) $(CLANG_IA_FLAG)
++endif
+ 
+ # Use USERINCLUDE when you must reference the UAPI directories only.
+ USERINCLUDE    := \
+@@ -391,11 +406,11 @@ KBUILD_CFLAGS   := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
+ 		   -fno-strict-aliasing -fno-common \
+ 		   -Werror-implicit-function-declaration \
+ 		   -Wno-format-security \
+-		   -std=gnu89
++		   -std=gnu89 $(CLANG_FLAGS)
+ 
+ KBUILD_AFLAGS_KERNEL :=
+ KBUILD_CFLAGS_KERNEL :=
+-KBUILD_AFLAGS   := -D__ASSEMBLY__
++KBUILD_AFLAGS   := -D__ASSEMBLY__ $(CLANG_FLAGS)
+ KBUILD_AFLAGS_MODULE  := -DMODULE
+ KBUILD_CFLAGS_MODULE  := -DMODULE
+ KBUILD_LDFLAGS_MODULE := -T $(srctree)/scripts/module-common.lds
+@@ -605,7 +620,9 @@ ARCH_AFLAGS :=
+ ARCH_CFLAGS :=
+ include arch/$(SRCARCH)/Makefile
+ 
++ifneq ($(cc-name),clang)
+ KBUILD_CFLAGS	+= $(call cc-option,-fno-delete-null-pointer-checks,)
++endif
+ 
+ ifdef CONFIG_CC_OPTIMIZE_FOR_SIZE
+ KBUILD_CFLAGS	+= -Os $(call cc-disable-warning,maybe-uninitialized,)
+@@ -673,13 +690,18 @@ KBUILD_CPPFLAGS += $(call cc-option,-Wno-unknown-warning-option,)
+ KBUILD_CFLAGS += $(call cc-disable-warning, unused-variable)
+ KBUILD_CFLAGS += $(call cc-disable-warning, format-invalid-specifier)
+ KBUILD_CFLAGS += $(call cc-disable-warning, gnu)
++KBUILD_CFLAGS += $(call cc-disable-warning, asm-operand-widths)
++KBUILD_CFLAGS += $(call cc-disable-warning, initializer-overrides)
++KBUILD_CFLAGS += $(call cc-option, -fno-builtin)
+ # Quiet clang warning: comparison of unsigned expression < 0 is always false
+ KBUILD_CFLAGS += $(call cc-disable-warning, tautological-compare)
+ # CLANG uses a _MergedGlobals as optimization, but this breaks modpost, as the
+ # source of a reference will be _MergedGlobals and not on of the whitelisted names.
+ # See modpost pattern 2
+ KBUILD_CFLAGS += $(call cc-option, -mno-global-merge,)
++ifneq ($(cc-name),clang)
+ KBUILD_CFLAGS += $(call cc-option, -fcatch-undefined-behavior)
++endif
+ else
+ 
+ # These warnings generated too much noise in a regular build.
+diff --git a/arch/x86/Makefile b/arch/x86/Makefile
+index 4086abca0b32..5fa41ffe15e2 100644
+--- a/arch/x86/Makefile
++++ b/arch/x86/Makefile
+@@ -87,11 +87,13 @@ else
+         KBUILD_AFLAGS += -m64
+         KBUILD_CFLAGS += -m64
+ 
++ifneq ($(cc-name),clang)
+         # Align jump targets to 1 byte, not the default 16 bytes:
+-        KBUILD_CFLAGS += -falign-jumps=1
++        KBUILD_CFLAGS += $(call cc-option,-falign-jumps=1)
+ 
+         # Pack loops tightly as well:
+-        KBUILD_CFLAGS += -falign-loops=1
++        KBUILD_CFLAGS += $(call cc-option,-falign-loops=1)
++endif
+ 
+         # Don't autogenerate traditional x87 instructions
+         KBUILD_CFLAGS += $(call cc-option,-mno-80387)
+-- 
+1.9.3
+

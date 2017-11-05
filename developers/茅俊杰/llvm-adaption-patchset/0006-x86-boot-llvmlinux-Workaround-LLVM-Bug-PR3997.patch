@@ -1,0 +1,66 @@
+From 74a4881d9bf42f2feac6bff4a0e53e9e6c8b7d0c Mon Sep 17 00:00:00 2001
+From: Junjie Mao <junjie.mao@enight.me>
+Date: Tue, 25 Apr 2017 08:51:47 +0800
+Subject: [PATCH 06/16] x86: boot: llvmlinux: Workaround LLVM Bug PR3997
+
+For more details see [1].
+
+[1] https://llvm.org/bugs/show_bug.cgi?id=3997
+
+Signed-off-by: Sedat Dilek <sedat.dilek@gmail.com>
+---
+ arch/x86/boot/memory.c | 6 ++++++
+ arch/x86/boot/string.h | 3 +++
+ arch/x86/um/ksyms.c    | 2 +-
+ 3 files changed, 10 insertions(+), 1 deletion(-)
+
+diff --git a/arch/x86/boot/memory.c b/arch/x86/boot/memory.c
+index db75d07c3645..d49115f80fbb 100644
+--- a/arch/x86/boot/memory.c
++++ b/arch/x86/boot/memory.c
+@@ -64,7 +64,13 @@ static int detect_memory_e820(void)
+ 			break;
+ 		}
+ 
++/* Workaround LLVM Bug PR3997 */
++#ifdef __clang__
++		memcpy(desc, &buf, sizeof(*desc));
++		desc++;
++#else
+ 		*desc++ = buf;
++#endif /* __clang__ */
+ 		count++;
+ 	} while (ireg.ebx && count < ARRAY_SIZE(boot_params.e820_map));
+ 
+diff --git a/arch/x86/boot/string.h b/arch/x86/boot/string.h
+index 725e820602b1..31a431e9d4e2 100644
+--- a/arch/x86/boot/string.h
++++ b/arch/x86/boot/string.h
+@@ -14,8 +14,11 @@ int memcmp(const void *s1, const void *s2, size_t len);
+  * Access builtin version by default. If one needs to use optimized version,
+  * do "undef memcpy" in .c file and link against right string.c
+  */
++/* Workaround LLVM Bug PR3997 */
++#ifndef __clang__
+ #define memcpy(d,s,l) __builtin_memcpy(d,s,l)
+ #define memset(d,c,l) __builtin_memset(d,c,l)
+ #define memcmp	__builtin_memcmp
++#endif /* __clang__ */
+ 
+ #endif /* BOOT_STRING_H */
+diff --git a/arch/x86/um/ksyms.c b/arch/x86/um/ksyms.c
+index 2e8f43ec6214..04aedcecd887 100644
+--- a/arch/x86/um/ksyms.c
++++ b/arch/x86/um/ksyms.c
+@@ -4,7 +4,7 @@
+ 
+ #ifndef CONFIG_X86_32
+ /*XXX: we need them because they would be exported by x86_64 */
+-#if (__GNUC__ == 4 && __GNUC_MINOR__ >= 3) || __GNUC__ > 4
++#if (__GNUC__ == 4 && __GNUC_MINOR__ >= 3) || __GNUC__ > 4 || defined(__clang__)
+ EXPORT_SYMBOL(memcpy);
+ #else
+ EXPORT_SYMBOL(__memcpy);
+-- 
+1.9.3
+

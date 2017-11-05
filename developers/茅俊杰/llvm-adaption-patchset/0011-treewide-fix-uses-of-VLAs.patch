@@ -1,0 +1,135 @@
+From 54a6d1dcf4d7755a46b08e0efcfcd84b0ab8ef9f Mon Sep 17 00:00:00 2001
+From: Junjie Mao <junjie.mao@enight.me>
+Date: Tue, 25 Apr 2017 09:31:53 +0800
+Subject: [PATCH 11/16] treewide: fix uses of VLAs
+
+Signed-off-by: Junjie Mao <junjie.mao@enight.me>
+---
+ arch/x86/xen/mmu.c         | 35 ++++++++++++++++++-----------------
+ drivers/md/raid10.c        |  8 +++-----
+ security/apparmor/crypto.c | 17 +++++++----------
+ 3 files changed, 28 insertions(+), 32 deletions(-)
+
+diff --git a/arch/x86/xen/mmu.c b/arch/x86/xen/mmu.c
+index cb5e266a8bf7..167620ea79ba 100644
+--- a/arch/x86/xen/mmu.c
++++ b/arch/x86/xen/mmu.c
+@@ -1374,36 +1374,37 @@ static void xen_flush_tlb_others(const struct cpumask *cpus,
+ 				 struct mm_struct *mm, unsigned long start,
+ 				 unsigned long end)
+ {
+-	struct {
+-		struct mmuext_op op;
+-#ifdef CONFIG_SMP
+-		DECLARE_BITMAP(mask, num_processors);
+-#else
+-		DECLARE_BITMAP(mask, NR_CPUS);
+-#endif
+-	} *args;
+ 	struct multicall_space mcs;
++	struct mmuext_op *op;
++	struct cpumask *mask;
+ 
+ 	trace_xen_mmu_flush_tlb_others(cpus, mm, start, end);
+ 
+ 	if (cpumask_empty(cpus))
+ 		return;		/* nothing to do */
+ 
+-	mcs = xen_mc_entry(sizeof(*args));
+-	args = mcs.args;
+-	args->op.arg2.vcpumask = to_cpumask(args->mask);
++#ifdef CONFIG_SMP
++	mcs = xen_mc_entry(sizeof(struct mmuext_op) + BITS_TO_LONGS(num_processors)*sizeof(unsigned long));
++#else
++	mcs = xen_mc_entry(sizeof(struct mmuext_op) + BITS_TO_LONGS(NR_CPUS)*sizeof(unsigned long));
++#endif
++	/* Extract fields */
++	op = mcs.args;
++	mask = to_cpumask(mcs.args + sizeof(struct mmuext_op));
++
++	op->arg2.vcpumask = mask;
+ 
+ 	/* Remove us, and any offline CPUS. */
+-	cpumask_and(to_cpumask(args->mask), cpus, cpu_online_mask);
+-	cpumask_clear_cpu(smp_processor_id(), to_cpumask(args->mask));
++	cpumask_and(mask, cpus, cpu_online_mask);
++	cpumask_clear_cpu(smp_processor_id(), mask);
+ 
+-	args->op.cmd = MMUEXT_TLB_FLUSH_MULTI;
++	op->cmd = MMUEXT_TLB_FLUSH_MULTI;
+ 	if (end != TLB_FLUSH_ALL && (end - start) <= PAGE_SIZE) {
+-		args->op.cmd = MMUEXT_INVLPG_MULTI;
+-		args->op.arg1.linear_addr = start;
++		op->cmd = MMUEXT_INVLPG_MULTI;
++		op->arg1.linear_addr = start;
+ 	}
+ 
+-	MULTI_mmuext_op(mcs.mc, &args->op, 1, NULL, DOMID_SELF);
++	MULTI_mmuext_op(mcs.mc, op, 1, NULL, DOMID_SELF);
+ 
+ 	xen_mc_issue(PARAVIRT_LAZY_MMU);
+ }
+diff --git a/drivers/md/raid10.c b/drivers/md/raid10.c
+index ebb0dd612ebd..aa6e188fd651 100644
+--- a/drivers/md/raid10.c
++++ b/drivers/md/raid10.c
+@@ -4486,11 +4486,9 @@ static int handle_reshape_read_error(struct mddev *mddev,
+ 	/* Use sync reads to get the blocks from somewhere else */
+ 	int sectors = r10_bio->sectors;
+ 	struct r10conf *conf = mddev->private;
+-	struct {
+-		struct r10bio r10_bio;
+-		struct r10dev devs[conf->copies];
+-	} on_stack;
+-	struct r10bio *r10b = &on_stack.r10_bio;
++	/* Allocate space for r10bio on stack */
++	u8 r10bio_on_stack[sizeof(struct r10bio) + conf->copies * sizeof(struct r10dev)];
++	struct r10bio *r10b = (struct r10bio *) r10bio_on_stack;
+ 	int slot = 0;
+ 	int idx = 0;
+ 	struct bio_vec *bvec = r10_bio->master_bio->bi_io_vec;
+diff --git a/security/apparmor/crypto.c b/security/apparmor/crypto.c
+index 532471d0b3a0..c948247e90c2 100644
+--- a/security/apparmor/crypto.c
++++ b/security/apparmor/crypto.c
+@@ -32,10 +32,7 @@ unsigned int aa_hash_size(void)
+ int aa_calc_profile_hash(struct aa_profile *profile, u32 version, void *start,
+ 			 size_t len)
+ {
+-	struct {
+-		struct shash_desc shash;
+-		char ctx[crypto_shash_descsize(apparmor_tfm)];
+-	} desc;
++	SHASH_DESC_ON_STACK(shash, apparmor_tfm);
+ 	int error = -ENOMEM;
+ 	u32 le32_version = cpu_to_le32(version);
+ 
+@@ -46,19 +43,19 @@ int aa_calc_profile_hash(struct aa_profile *profile, u32 version, void *start,
+ 	if (!profile->hash)
+ 		goto fail;
+ 
+-	desc.shash.tfm = apparmor_tfm;
+-	desc.shash.flags = 0;
++	shash->tfm = apparmor_tfm;
++	shash->flags = 0;
+ 
+-	error = crypto_shash_init(&desc.shash);
++	error = crypto_shash_init(shash);
+ 	if (error)
+ 		goto fail;
+-	error = crypto_shash_update(&desc.shash, (u8 *) &le32_version, 4);
++	error = crypto_shash_update(shash, (u8 *) &le32_version, 4);
+ 	if (error)
+ 		goto fail;
+-	error = crypto_shash_update(&desc.shash, (u8 *) start, len);
++	error = crypto_shash_update(shash, (u8 *) start, len);
+ 	if (error)
+ 		goto fail;
+-	error = crypto_shash_final(&desc.shash, profile->hash);
++	error = crypto_shash_final(shash, profile->hash);
+ 	if (error)
+ 		goto fail;
+ 
+-- 
+1.9.3
+

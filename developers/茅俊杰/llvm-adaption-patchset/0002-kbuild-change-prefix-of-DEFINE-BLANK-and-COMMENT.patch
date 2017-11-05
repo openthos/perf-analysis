@@ -1,0 +1,75 @@
+From 9bbfe61c9a546dfe4c62079e018e4c717d819e4a Mon Sep 17 00:00:00 2001
+From: Junjie Mao <junjie.mao@enight.me>
+Date: Tue, 25 Apr 2017 08:40:48 +0800
+Subject: [PATCH 02/16] kbuild: change prefix of DEFINE, BLANK and COMMENT
+
+Signed-off-by: Junjie Mao <junjie.mao@enight.me>
+---
+ Kbuild                 | 8 ++++----
+ include/linux/kbuild.h | 6 +++---
+ scripts/mod/Makefile   | 8 ++++----
+ 3 files changed, 11 insertions(+), 11 deletions(-)
+
+diff --git a/Kbuild b/Kbuild
+index f55cefd9bf29..0bbb86358942 100644
+--- a/Kbuild
++++ b/Kbuild
+@@ -8,10 +8,10 @@
+ 
+ # Default sed regexp - multiline due to syntax constraints
+ define sed-y
+-	"/^->/{s:->#\(.*\):/* \1 */:; \
+-	s:^->\([^ ]*\) [\$$#]*\([-0-9]*\) \(.*\):#define \1 \2 /* \3 */:; \
+-	s:^->\([^ ]*\) [\$$#]*\([^ ]*\) \(.*\):#define \1 \2 /* \3 */:; \
+-	s:->::; p;}"
++	"/^@->/{s:@->#\(.*\):/* \1 */:; \
++	s:^@->\([^ ]*\) [\$$#]*\([-0-9]*\) \(.*\):#define \1 \2 /* \3 */:; \
++	s:^@->\([^ ]*\) [\$$#]*\([^ ]*\) \(.*\):#define \1 \2 /* \3 */:; \
++	s:@->::; p;}"
+ endef
+ 
+ # Use filechk to avoid rebuilds when a header changes, but the resulting file
+diff --git a/include/linux/kbuild.h b/include/linux/kbuild.h
+index 22a72198c14b..75fa2c3e0e1d 100644
+--- a/include/linux/kbuild.h
++++ b/include/linux/kbuild.h
+@@ -2,14 +2,14 @@
+ #define __LINUX_KBUILD_H
+ 
+ #define DEFINE(sym, val) \
+-        asm volatile("\n->" #sym " %0 " #val : : "i" (val))
++	asm volatile("\n@->" #sym " %0 " #val : : "i" (val))
+ 
+-#define BLANK() asm volatile("\n->" : : )
++#define BLANK() asm volatile("\n@->" : : )
+ 
+ #define OFFSET(sym, str, mem) \
+ 	DEFINE(sym, offsetof(struct str, mem))
+ 
+ #define COMMENT(x) \
+-	asm volatile("\n->#" x)
++	asm volatile("\n@->#" x)
+ 
+ #endif
+diff --git a/scripts/mod/Makefile b/scripts/mod/Makefile
+index c11212ff3510..86f6b852cd93 100644
+--- a/scripts/mod/Makefile
++++ b/scripts/mod/Makefile
+@@ -6,10 +6,10 @@ modpost-objs	:= modpost.o file2alias.o sumversion.o
+ devicetable-offsets-file := devicetable-offsets.h
+ 
+ define sed-y
+-	"/^->/{s:->#\(.*\):/* \1 */:; \
+-	s:^->\([^ ]*\) [\$$#]*\([-0-9]*\) \(.*\):#define \1 \2 /* \3 */:; \
+-	s:^->\([^ ]*\) [\$$#]*\([^ ]*\) \(.*\):#define \1 \2 /* \3 */:; \
+-	s:->::; p;}"
++	"/^@->/{s:@->#\(.*\):/* \1 */:; \
++	s:^@->\([^ ]*\) [\$$#]*\([-0-9]*\) \(.*\):#define \1 \2 /* \3 */:; \
++	s:^@->\([^ ]*\) [\$$#]*\([^ ]*\) \(.*\):#define \1 \2 /* \3 */:; \
++	s:@->::; p;}"
+ endef
+ 
+ quiet_cmd_offsets = GEN     $@
+-- 
+1.9.3
+
